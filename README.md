@@ -22,13 +22,15 @@ El repositorio contiene el proyecto base Spring Boot y la estructura de carpetas
 - [x] Proyecto base generado con Maven Wrapper.
 - [x] Ejecución de `mvnw.cmd test`: una prueba, cero fallos, cero errores y BUILD SUCCESS.
 - [x] Estructura de paquetes, vistas, recursos, pruebas y documentación publicada en main.
+- [x] Versiones confirmadas: Spring Boot 4.1.1 y Java 25.
+- [x] Dependencias confirmadas: Spring MVC, Thymeleaf y Validation.
+- [x] Servidor web iniciado correctamente en el puerto 8080.
+- [x] Página inicial implementada con HomeController y la plantilla index.html, y verificada en el navegador.
 
 Esta prueba inicial comprueba el arranque del contexto de Spring; no demuestra que existan funciones de negocio. La estructura contiene archivos `.gitkeep` para conservar carpetas vacías.
 
 ### Pendiente
 
-- [ ] Confirmar las versiones y dependencias exactas del `pom.xml` como referencia común del equipo.
-- [ ] Verificar el arranque del servidor web y crear una página inicial.
 - [ ] Preparar y comprobar el entorno de cada integrante.
 - [ ] Implementar registro, login, logout y control de acceso por rol.
 - [ ] Implementar chats, mensajes e historial persistente.
@@ -155,7 +157,7 @@ mvnw.cmd spring-boot:run
 
 Esperar el mensaje de inicio de la aplicación y comprobar el puerto indicado en la consola. Con la configuración predeterminada, abrir http://localhost:8080 . Detener con **Ctrl + C**.
 
-**Estado de verificación:** este arranque web todavía está pendiente de comprobar. Como no hay página inicial ni controlador de inicio implementados, una respuesta HTTP 404 en `/` puede ser normal aunque el servidor haya arrancado. No hay cuentas, pantallas funcionales ni credenciales de demostración disponibles todavía.
+**Estado de verificación:** arranque web comprobado en Windows con Java 25.0.3 y Spring Boot 4.1.1. La dirección http://localhost:8080 muestra la página inicial mediante HomeController e index.html. Las funciones de registro, autenticación, chat e IA siguen pendientes.
 
 ### 7. Empaquetar
 
