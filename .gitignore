@@ -30,3 +30,9 @@ target/
 .env
 .env.*
 !.env.example
+# SQLite local
+data/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
