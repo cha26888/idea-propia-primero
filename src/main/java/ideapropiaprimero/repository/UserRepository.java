@@ -1,7 +1,7 @@
-package gt.edu.uvg.ideapropiaprimero.repository;
+package ideapropiaprimero.repository;
 
-import gt.edu.uvg.ideapropiaprimero.model.*;
-import gt.edu.uvg.ideapropiaprimero.exception.RegistrationException;
+import ideapropiaprimero.model.*;
+import ideapropiaprimero.exception.RegistrationException;
 import java.nio.file.*;
 import java.sql.*;
 import java.util.*;

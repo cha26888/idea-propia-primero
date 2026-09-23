@@ -1,5 +1,5 @@
-package gt.edu.uvg.ideapropiaprimero.security;
-import gt.edu.uvg.ideapropiaprimero.repository.UserRepository;
+package ideapropiaprimero.security;
+import ideapropiaprimero.repository.UserRepository;
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.*;

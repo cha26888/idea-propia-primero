@@ -1,6 +1,6 @@
-package gt.edu.uvg.ideapropiaprimero.config;
-import gt.edu.uvg.ideapropiaprimero.dto.RegisterForm;
-import gt.edu.uvg.ideapropiaprimero.service.RegistrationService;
+package ideapropiaprimero.config;
+import ideapropiaprimero.dto.RegisterForm;
+import ideapropiaprimero.service.RegistrationService;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.*;

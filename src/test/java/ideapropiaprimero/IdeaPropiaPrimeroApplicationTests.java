@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero;
+package ideapropiaprimero;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

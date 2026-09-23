@@ -1,8 +1,8 @@
-package gt.edu.uvg.ideapropiaprimero.service;
-import gt.edu.uvg.ideapropiaprimero.dto.RegisterForm;
-import gt.edu.uvg.ideapropiaprimero.exception.RegistrationException;
-import gt.edu.uvg.ideapropiaprimero.model.Role;
-import gt.edu.uvg.ideapropiaprimero.repository.UserRepository;
+package ideapropiaprimero.service;
+import ideapropiaprimero.dto.RegisterForm;
+import ideapropiaprimero.exception.RegistrationException;
+import ideapropiaprimero.model.Role;
+import ideapropiaprimero.repository.UserRepository;
 import jakarta.validation.Validator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.dto;
+package ideapropiaprimero.dto;
 
 import jakarta.validation.constraints.*;
 

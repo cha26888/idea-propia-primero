@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.model;
+package ideapropiaprimero.model;
 
 /** Cuenta persistente. Nunca exponer passwordHash en vistas o respuestas. */
 public class User {

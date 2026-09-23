@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.controller;
+package ideapropiaprimero.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

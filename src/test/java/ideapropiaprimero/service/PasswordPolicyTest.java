@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.service;
+package ideapropiaprimero.service;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 class PasswordPolicyTest {

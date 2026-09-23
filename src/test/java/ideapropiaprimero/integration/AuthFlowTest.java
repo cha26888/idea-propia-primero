@@ -1,9 +1,9 @@
-package gt.edu.uvg.ideapropiaprimero.integration;
+package ideapropiaprimero.integration;
 
-import gt.edu.uvg.ideapropiaprimero.dto.RegisterForm;
-import gt.edu.uvg.ideapropiaprimero.model.Role;
-import gt.edu.uvg.ideapropiaprimero.repository.UserRepository;
-import gt.edu.uvg.ideapropiaprimero.service.RegistrationService;
+import ideapropiaprimero.dto.RegisterForm;
+import ideapropiaprimero.model.Role;
+import ideapropiaprimero.repository.UserRepository;
+import ideapropiaprimero.service.RegistrationService;
 import java.nio.file.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

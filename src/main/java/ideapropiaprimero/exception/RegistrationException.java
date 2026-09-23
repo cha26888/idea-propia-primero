@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.exception;
+package ideapropiaprimero.exception;
 public class RegistrationException extends RuntimeException {
     private final String field;
     public RegistrationException(String message) { this(null, message); }

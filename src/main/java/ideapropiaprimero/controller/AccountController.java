@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.controller;
+package ideapropiaprimero.controller;
 import java.security.Principal;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;

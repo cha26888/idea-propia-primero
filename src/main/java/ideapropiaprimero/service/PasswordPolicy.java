@@ -1,4 +1,4 @@
-package gt.edu.uvg.ideapropiaprimero.service;
+package ideapropiaprimero.service;
 import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

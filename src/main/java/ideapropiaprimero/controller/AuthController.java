@@ -1,8 +1,8 @@
-package gt.edu.uvg.ideapropiaprimero.controller;
+package ideapropiaprimero.controller;
 
-import gt.edu.uvg.ideapropiaprimero.dto.RegisterForm;
-import gt.edu.uvg.ideapropiaprimero.exception.RegistrationException;
-import gt.edu.uvg.ideapropiaprimero.service.*;
+import ideapropiaprimero.dto.RegisterForm;
+import ideapropiaprimero.exception.RegistrationException;
+import ideapropiaprimero.service.*;
 import jakarta.validation.Valid;
 import java.util.*;
 import org.springframework.http.ResponseEntity;
