@@ -148,5 +148,3 @@ Compartir este README, el pom.xml, el UML y los archivos del módulo a modificar
 Tema central en `static/css/theme.css`, componentes en `static/css/components.css` y fragmentos en `templates/fragments/ui.html`. Guía del equipo: `docs/architecture/interfaz.md`.
 
 Con JavaScript, el registro envía a POST `/register/submit` y muestra mensajes por campo sin borrar la contraseña. Sin JavaScript, POST `/register` utiliza el formulario convencional. Las respuestas JSON contienen únicamente mensajes y estado, nunca valores de contraseña. La base y los roles se conservan.
-
-El ZIP enviado para revisión contenía AuthController de la versión anterior junto con la prueba JSON nueva. Esta entrega incorpora el controlador actualizado y separa explícitamente las rutas HTML/JSON. Ejecutar `mvnw.cmd clean test` para recompilar todo. No se han ejecutado las pruebas Java de esta revisión en el entorno de preparación; el resultado debe verificarse en Java 25.
