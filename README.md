@@ -4,9 +4,6 @@ Proyecto POO UVG · Sección 30 · Grupo 3.
 
 Aplicación web para fortalecer el razonamiento propio antes de recibir ayuda de IA.
 
-## Estado de esta entrega
-
-Se implementó el código de registro, login por usuario o correo, logout, persistencia SQLite y roles STUDENT/AUXILIAR. Se incluyen pruebas automatizadas. **Estas modificaciones todavía deben compilarse y probarse en la computadora del equipo:** el entorno donde se prepararon no tenía Java 25 ni acceso a las descargas de Maven. No marcar esta entrega como validada hasta ejecutar las comprobaciones siguientes.
 
 ## Requisitos y ejecución (Windows CMD)
 
