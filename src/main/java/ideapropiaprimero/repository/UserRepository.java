@@ -1,15 +1,19 @@
 package ideapropiaprimero.repository;
 
 import ideapropiaprimero.model.*;
+import ideapropiaprimero.dto.StudentSummary;
 import ideapropiaprimero.exception.RegistrationException;
 import java.nio.file.*;
 import java.sql.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+    private static final DateTimeFormatter SQLITE_TIMESTAMP = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final String url;
     public UserRepository(@Value("${app.database.path:data/idea-propia-primero.db}") String path) {
         try {
@@ -62,5 +66,21 @@ public class UserRepository {
             if (e.getErrorCode() == 19) throw new RegistrationException("Ese usuario o correo ya está registrado. Usa otro o inicia sesión.");
             throw new IllegalStateException("No se pudo guardar la cuenta.", e);
         }
+    }
+    public List<StudentSummary> findAllStudents() {
+        try (Connection c = connect(); PreparedStatement s = c.prepareStatement(
+                "SELECT id, username, email, created_at FROM users WHERE role = ? ORDER BY username_key")) {
+            s.setString(1, Role.STUDENT.name());
+            try (ResultSet r = s.executeQuery()) {
+                List<StudentSummary> students = new ArrayList<>();
+                while (r.next()) students.add(new StudentSummary(r.getLong("id"), r.getString("username"),
+                        r.getString("email"), toLocalTime(r.getString("created_at"))));
+                return students;
+            }
+        } catch (SQLException e) { throw new IllegalStateException("No se pudo consultar la lista de estudiantes.", e); }
+    }
+    private static LocalDateTime toLocalTime(String utc) {
+        return LocalDateTime.parse(utc, SQLITE_TIMESTAMP).atOffset(ZoneOffset.UTC)
+                .atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }
 }
