@@ -1,8 +1,27 @@
-<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/ui :: head('Iniciar sesión')}"></head><body><main class="page"><section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a><h1 class="title" id="page-title">Qué bueno verte.</h1><p>Entra con tu usuario o correo.</p>
-<div class="alert alert--success" role="status" th:if="${param.registered}">Tu cuenta está lista. Ya puedes iniciar sesión.</div>
-<div class="alert alert--success" role="status" th:if="${param.logout}">Cerraste sesión correctamente.</div>
-<div class="alert alert--error" role="alert" th:if="${param.error}">El usuario, correo o contraseña no coincide. Revisa tus datos e inténtalo de nuevo.</div>
-<form th:action="@{/login}" method="post">
-<label class="field__label stack" for="username">Usuario o correo</label><input class="input" id="username" name="username" autocomplete="username" required maxlength="254">
-<div th:replace="~{fragments/ui :: password('current-password','','')}"></div>
-<button class="button button--primary button--block" type="submit">Entrar</button></form><p>¿Todavía no tienes cuenta? <a th:href="@{/register}">Regístrate</a></p></section></main></body></html>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/ui :: head('Iniciar sesión')}"></head>
+
+<body>
+    <main class="page">
+        <section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a>
+            <h1 class="title" id="page-title">Qué bueno verte.</h1>
+            <p>Entra con tu usuario o correo.</p>
+            <div class="alert alert--success" role="status" th:if="${param.registered}">Tu cuenta está lista. Ya puedes
+                iniciar sesión.</div>
+            <div class="alert alert--success" role="status" th:if="${param.logout}">Cerraste sesión correctamente.</div>
+            <div class="alert alert--error" role="alert" th:if="${param.error}">El usuario, correo o contraseña no
+                coincide. Revisa tus datos e inténtalo de nuevo.</div>
+            <form th:action="@{/login}" method="post">
+                <label class="field__label stack" for="username">Usuario o correo</label><input class="input"
+                    id="username" name="username" autocomplete="username" required maxlength="254">
+                <div th:replace="~{fragments/ui :: password('current-password','','')}"></div>
+                <button class="button button--primary button--block" type="submit">Entrar</button>
+            </form>
+            <p>¿Todavía no tienes cuenta? <a th:href="@{/register}">Regístrate</a></p>
+        </section>
+    </main>
+</body>
+
+</html>

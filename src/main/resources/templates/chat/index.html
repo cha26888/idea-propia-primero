@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat · Idea propia primero</title>
+<!-- Spring Security expone el token CSRF como atributo de request; Thymeleaf lo lee directo. -->
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" th:href="@{/css/theme.css}">
+<link rel="stylesheet" th:href="@{/css/components.css}">
+<link rel="stylesheet" th:href="@{/css/chat.css}">
+<script defer th:src="@{/js/chat.js}"></script>
+</head>
+<body class="chat-body">
+
+<header class="topbar">
+  <button class="topbar__menu" type="button" data-sidebar-toggle aria-label="Abrir historial de chats"><span></span></button>
+  <a class="topbar__brand" th:href="@{/}">IDEA PROPIA PRIMERO</a>
+  <div class="topbar__spacer"></div>
+  <div class="topbar__user">
+    <span th:text="${username}">usuario</span>
+    <span class="topbar__role" th:if="${auxiliar}">Auxiliar</span>
+  </div>
+  <form th:replace="~{fragments/ui :: logout}"></form>
+</header>
+
+<div class="sidebar-overlay" data-sidebar-overlay></div>
+
+<div class="chat-shell">
+  <aside class="sidebar" aria-label="Historial de chats">
+    <div class="sidebar__section">
+      <button class="button button--primary sidebar__new" type="button" data-new-chat>+ Nuevo chat</button>
+    </div>
+    <p class="sidebar__label">TUS CHATS</p>
+    <ul class="sidebar__list" data-chat-history>
+      <li class="sidebar__item">
+        <a class="sidebar__link" href="#" aria-current="true">
+          <span class="sidebar__link-title">Conversación actual</span>
+          <span class="sidebar__link-meta">Ahora</span>
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar__footer">
+      <a href="#" aria-disabled="true">Diario <span class="sidebar__soon">Próximamente</span></a>
+      <a href="#" aria-disabled="true">Tareas <span class="sidebar__soon">Próximamente</span></a>
+      <a th:href="@{/welcome}">← Volver a mi cuenta</a>
+    </div>
+  </aside>
+
+  <section class="chat-panel" data-chat-root aria-label="Conversación con el agente">
+    <div class="chat-scroll" data-chat-scroll>
+      <div class="chat-intro" data-chat-intro>
+        <h1>Cuéntame en qué estás trabajando.</h1>
+        <p>Antes de darte la respuesta, te voy a pedir que me muestres cómo lo intentaste tú primero. Así el razonamiento sigue siendo tuyo.</p>
+      </div>
+      <div class="chat-log" data-chat-log></div>
+    </div>
+
+    <div class="composer">
+      <p class="composer__hint" data-composer-hint>Enter envía tu mensaje · Shift + Enter agrega una línea nueva</p>
+      <form class="composer__form" data-composer-form>
+        <div class="composer__field">
+          <textarea class="composer__textarea" data-composer-input rows="1" maxlength="4000"
+            placeholder="Escribe tu pregunta o tu intento de solución…" aria-label="Mensaje para el agente"></textarea>
+          <button class="composer__send" type="submit" data-composer-send disabled aria-label="Enviar mensaje">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
