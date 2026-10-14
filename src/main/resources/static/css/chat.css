@@ -394,9 +394,13 @@ body.chat-body {
   border-radius: var(--radius-card);
   font: inherit;
   color: var(--color-text);
-  background: var(--color-bg)
+  background: var(--color-bg);
+  overflow: auto;
+  scrollbar-width: none;
 }
-
+.composer__textarea::-webkit-scrollbar {
+    display: none;
+}
 .composer__textarea:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px
