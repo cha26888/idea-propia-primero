@@ -1,11 +1,41 @@
+/* ==========================================
+   MOSTRAR Y OCULTAR CONTRASEÑA
+========================================== */
+
 document.querySelectorAll('[data-toggle-password]').forEach(button => {
+
   button.addEventListener('click', () => {
-    const input = document.getElementById(button.getAttribute('aria-controls'));
+
+    // Obtener el campo de contraseña
+    const input = document.getElementById(
+      button.getAttribute('aria-controls')
+    );
+
+    if (!input) return;
+
+    // Comprobar si la contraseña está oculta
     const show = input.type === 'password';
+
+    // Mostrar u ocultar contraseña
     input.type = show ? 'text' : 'password';
-    button.textContent = show ? 'Ocultar' : 'Mostrar';
+
+    // Actualizar el estado del botón
     button.setAttribute('aria-pressed', String(show));
+
+    // Actualizar el texto accesible
+    button.setAttribute(
+      'aria-label',
+      show ? 'Ocultar contraseña' : 'Mostrar contraseña'
+    );
+
+    // Actualizar el texto emergente
+    button.setAttribute(
+      'title',
+      show ? 'Ocultar contraseña' : 'Mostrar contraseña'
+    );
+
   });
+
 });
 
 const registerForm = document.querySelector('[data-register]');

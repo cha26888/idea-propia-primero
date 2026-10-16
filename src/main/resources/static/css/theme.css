@@ -22,7 +22,7 @@
     --radius-control: .5rem;
     --radius-card: 1.25rem;
     --width-form: 34rem;
-    --shadow-card: 0 18px 60px #203c3510
+    --shadow-card: 0 18px 60px #203c3510;
 
     /* Colores del mensaje motivador */
     --color-note-bg: #fff3b0;
@@ -172,3 +172,262 @@
 
 }
 
+/* ==========================================
+   LOGIN Y REGISTER - IDEA PROPIA PRIMERO
+========================================== */
+
+
+/* TARJETA DE AUTENTICACIÓN */
+
+.auth-card {
+    text-align: center;
+}
+
+
+/* TÍTULO */
+
+.auth-title {
+    text-align: center;
+
+    color: var(--color-text);
+
+    font-size: 1.9rem;
+
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    margin-bottom: var(--space-2);
+}
+
+
+/* DESCRIPCIÓN */
+
+.auth-description {
+    text-align: center;
+
+    color: var(--color-muted);
+
+    font-size: 0.95rem;
+
+    line-height: 1.7;
+
+    margin-bottom: var(--space-3);
+}
+
+
+/* FORMULARIO */
+
+.auth-form {
+    width: 100%;
+
+    text-align: left;
+
+    margin-top: var(--space-3);
+}
+
+
+/* ETIQUETAS */
+
+.auth-form .field__label {
+    display: block;
+
+    text-align: left;
+
+    color: var(--color-text);
+
+    font-size: 0.9rem;
+
+    font-weight: 600;
+
+    margin-bottom: 0.5rem;
+}
+
+
+/* CAMPOS DE ENTRADA */
+
+.auth-form .input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1.5px solid var(--color-border);
+
+    border-radius: var(--radius-control);
+
+    padding: 0.85rem 1rem;
+
+    font-size: 0.95rem;
+
+    color: var(--color-text);
+
+    background-color: var(--color-surface);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* EFECTO AL SELECCIONAR UN CAMPO */
+
+.auth-form .input:focus {
+    outline: none;
+
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(35, 95, 73, 0.15);
+}
+
+
+/* TEXTO DE EJEMPLO EN LOS CAMPOS */
+
+.auth-form .input::placeholder {
+    color: var(--color-muted);
+
+    opacity: 0.75;
+}
+
+
+/* BOTÓN DE INICIO DE SESIÓN */
+
+.auth-submit {
+    width: 100%;
+
+    margin-top: var(--space-3);
+
+    padding: 0.9rem 1rem;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* EFECTO DEL BOTÓN */
+
+.auth-submit:hover {
+    background-color: var(--color-primary-hover);
+}
+
+
+/* ALERTAS */
+
+.auth-alert {
+    text-align: center;
+
+    padding: 1rem;
+
+    margin: var(--space-2) 0;
+
+    border-radius: var(--radius-control);
+
+    font-size: 0.9rem;
+
+    line-height: 1.6;
+
+    font-weight: 500;
+}
+
+
+/* ALERTA EXITOSA */
+
+.auth-card .alert--success {
+    background-color: var(--color-success-bg);
+
+    color: var(--color-success);
+
+    border: 1px solid var(--color-success);
+}
+
+
+/* ALERTA DE ERROR */
+
+.auth-card .alert--error {
+    background-color: var(--color-error-bg);
+
+    color: var(--color-error);
+
+    border: 1px solid var(--color-error);
+}
+
+
+/* SECCIÓN DE REGISTRO */
+
+.auth-register {
+    text-align: center;
+
+    margin-top: var(--space-4);
+
+    padding-top: var(--space-3);
+
+    border-top: 1px solid var(--color-border);
+}
+
+
+/* MENSAJE PARA NUEVOS USUARIOS */
+
+.auth-register-message {
+    text-align: center;
+
+    color: var(--color-muted);
+
+    font-size: 0.9rem;
+
+    line-height: 1.7;
+
+    margin-bottom: var(--space-2);
+}
+
+
+/* ENLACE DE REGISTRO */
+
+.auth-register-link {
+    display: inline-block;
+
+    color: var(--color-primary);
+
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    padding: 0.5rem;
+}
+
+
+/* EFECTO DEL ENLACE */
+
+.auth-register-link:hover {
+    text-decoration: underline;
+}
+
+
+/* ADAPTACIÓN PARA CELULARES */
+
+@media (max-width: 600px) {
+
+    .auth-title {
+        font-size: 1.6rem;
+    }
+
+    .auth-description {
+        font-size: 0.9rem;
+    }
+
+    .auth-card {
+        padding: var(--space-2);
+    }
+
+    .auth-register-message {
+        font-size: 0.85rem;
+    }
+
+}
