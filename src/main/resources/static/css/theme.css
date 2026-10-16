@@ -23,4 +23,152 @@
     --radius-card: 1.25rem;
     --width-form: 34rem;
     --shadow-card: 0 18px 60px #203c3510
+
+    /* Colores del mensaje motivador */
+    --color-note-bg: #fff3b0;
+    --color-note-text: #665200;
+    --color-note-border: #f4c542;
 }
+
+/* ==========================================
+   PÁGINA DE INICIO - IDEA PROPIA PRIMERO
+========================================== */
+
+
+/* Tarjeta principal */
+.home-card {
+    text-align: center;
+}
+
+
+/* Mensaje motivador tipo Post-it */
+.motivational-note {
+    background-color: var(--color-note-bg);
+    color: var(--color-note-text);
+
+    padding: var(--space-2);
+
+    border-radius: var(--radius-control);
+    border-left: 5px solid var(--color-note-border);
+
+    margin: var(--space-2) 0 var(--space-3);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.6;
+
+    box-shadow: 0 4px 12px #203c3510;
+}
+
+
+/* Título principal */
+.home-title {
+    text-align: center;
+
+    font-size: 2rem;
+    font-weight: 700;
+
+    color: var(--color-text);
+
+    margin-bottom: var(--space-3);
+}
+
+
+/* Descripción */
+.home-description {
+    text-align: justify;
+
+    color: var(--color-muted);
+
+    font-size: 0.95rem;
+    line-height: 1.8;
+
+    margin-bottom: var(--space-3);
+
+    overflow-wrap: break-word;
+}
+
+
+/* Frase motivadora */
+.inspirational-quote {
+    background-color: var(--color-bg);
+
+    border-left: 4px solid var(--color-primary);
+
+    border-radius: var(--radius-control);
+
+    padding: var(--space-2);
+
+    margin: var(--space-3) 0;
+
+    text-align: center;
+}
+
+
+/* Texto de la frase */
+.inspirational-quote p {
+    color: var(--color-text);
+
+    font-size: 1rem;
+    font-style: italic;
+
+    line-height: 1.6;
+
+    margin-bottom: var(--space-1);
+}
+
+
+/* Autor */
+.inspirational-quote footer {
+    color: var(--color-muted);
+
+    font-size: var(--text-small);
+
+    font-weight: 600;
+}
+
+
+/* Texto de registro */
+.register-text {
+    text-align: center;
+
+    margin-top: var(--space-2);
+
+    font-size: var(--text-small);
+}
+
+
+/* Enlace de registro */
+.register-text a {
+    color: var(--color-primary);
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+
+/* Efecto al pasar el mouse */
+.register-text a:hover {
+    text-decoration: underline;
+}
+
+
+/* Adaptación para celulares */
+@media (max-width: 600px) {
+
+    .home-title {
+        font-size: 1.6rem;
+    }
+
+    .home-description {
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+
+    .motivational-note {
+        font-size: 0.85rem;
+    }
+
+}
+
