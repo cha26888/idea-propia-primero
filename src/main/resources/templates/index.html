@@ -1,18 +1,86 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<link rel="icon" type="image/png" href="/images/icon.png">
+
 <head th:replace="~{fragments/ui :: head('Inicio')}"></head>
 
 <body>
-    <main class="page">
-        <section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a><span
-                class="badge">APRENDE A TU RITMO</span>
-            <h1 class="title" id="page-title">Tu idea va primero.</h1>
-            <p>Un espacio para desarrollar tu razonamiento antes de recibir ayuda de inteligencia artificial.</p><a
-                class="button button--primary button--block" th:href="@{/login}">Iniciar sesión</a>
-            <p>¿Primera vez aquí? <a th:href="@{/register}">Crear mi cuenta</a></p>
-        </section>
-    </main>
-</body>
 
+    <main class="page">
+
+        <section class="card home-card" aria-labelledby="page-title">
+
+            <!-- LOGOTIPO -->
+            <a th:replace="~{fragments/ui :: brand}"></a>
+
+            <!-- MENSAJE MOTIVADOR -->
+            <div class="motivational-note">
+                🌟 ¡Confía en ti! Porque cada intento te hace mejor. 💛
+            </div>
+
+            <!-- TÍTULO PRINCIPAL -->
+            <h1 class="title home-title" id="page-title">
+                Tú eres el protagonista.
+            </h1>
+
+            <!-- DESCRIPCIÓN -->
+            <p class="home-description">
+
+                ¡Bienvenido a Idea Propia Primero!
+
+                Este es un espacio diseñado para fortalecer tu
+                pensamiento crítico, desarrollar tus propias ideas
+                y descubrir todo lo que eres capaz de lograr.
+
+                Aquí, antes de recibir ayuda de la inteligencia
+                artificial, tendrás la oportunidad de reflexionar,
+                analizar y construir tus propias respuestas.
+
+                Recuerda que aprender no significa tener siempre
+                la respuesta correcta, sino atreverte a pensar,
+                equivocarte y mejorar.
+
+                La inteligencia artificial será tu compañera
+                de aprendizaje, pero el verdadero protagonista
+                siempre serás tú.
+
+            </p>
+
+            <!-- FRASE MOTIVADORA -->
+            <blockquote class="inspirational-quote">
+
+                <p>
+                    "El aprendizaje nunca agota la mente".
+                </p>
+
+                <footer>
+                    — Leonardo da Vinci
+                </footer>
+
+            </blockquote>
+
+            <!-- BOTÓN DE INICIO DE SESIÓN -->
+            <a
+                class="button button--primary button--block"
+                th:href="@{/login}">
+
+                Iniciar sesión
+
+            </a>
+
+            <!-- REGISTRO -->
+            <p class="register-text">
+
+                ¿Primera vez aquí?
+
+                <a th:href="@{/register}">
+                    Crear mi cuenta
+                </a>
+
+            </p>
+
+        </section>
+
+    </main>
+
+</body>
 </html>

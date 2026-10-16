@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+    <!-- Fragmento reutilizable para cerrar sesión -->
+    <form
+        th:fragment="logout"
+        th:action="@{/logout}"
+        method="post"
+        class="stack">
+
+        <button
+            class="button button--secondary"
+            type="submit">
+
+            Cerrar sesión
+
+        </button>
+
+    </form>
+
+</body>
+</html>

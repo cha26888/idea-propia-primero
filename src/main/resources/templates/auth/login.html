@@ -1,29 +1,148 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/ui :: head('Iniciar sesión')}">
-    <link rel="icon" type="image/png" href="/images/icon.png">
-</head>
+<head th:replace="~{fragments/ui :: head('Iniciar sesión')}"></head>
 
 <body>
-    <main class="page">
-        <section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a>
-            <h1 class="title" id="page-title">Qué bueno verte.</h1>
-            <p>Entra con tu usuario o correo.</p>
-            <div class="alert alert--success" role="status" th:if="${param.registered}">Tu cuenta está lista. Ya puedes
-                iniciar sesión.</div>
-            <div class="alert alert--success" role="status" th:if="${param.logout}">Cerraste sesión correctamente.</div>
-            <div class="alert alert--error" role="alert" th:if="${param.error}">El usuario, correo o contraseña no
-                coincide. Revisa tus datos e inténtalo de nuevo.</div>
-            <form th:action="@{/login}" method="post">
-                <label class="field__label stack" for="username">Usuario o correo</label><input class="input"
-                    id="username" name="username" autocomplete="username" required maxlength="254">
-                <div th:replace="~{fragments/ui :: password('current-password','','')}"></div>
-                <button class="button button--primary button--block" type="submit">Entrar</button>
-            </form>
-            <p>¿Todavía no tienes cuenta? <a th:href="@{/register}">Regístrate</a></p>
-        </section>
-    </main>
-</body>
 
+    <main class="page">
+
+        <section class="card auth-card" aria-labelledby="page-title">
+
+            <!-- LOGOTIPO -->
+            <a th:replace="~{fragments/ui :: brand}"></a>
+
+            <!-- MENSAJE MOTIVADOR -->
+            <div class="motivational-note" role="note">
+                🌟 Tu esfuerzo importa y cada paso cuenta. 💛
+            </div>
+
+            <!-- TÍTULO -->
+            <h1 class="title auth-title" id="page-title">
+                ¡Este espacio es tuyo!
+            </h1>
+
+            <!-- DESCRIPCIÓN -->
+            <p class="auth-description">
+                ¡Felicitaciones por todo lo que has logrado!
+                Entra con tu usuario y contraseña para continuar
+                descubriendo todo lo que puedes lograr.
+            </p>
+
+            <!-- MENSAJE: REGISTRO EXITOSO -->
+            <div
+                class="alert alert--success auth-alert"
+                role="status"
+                th:if="${param.registered}">
+
+                🎉 ¡Tu cuenta está lista!
+                Ya puedes iniciar sesión y comenzar tu aprendizaje.
+
+            </div>
+
+            <!-- MENSAJE: SESIÓN CERRADA -->
+            <div
+                class="alert alert--success auth-alert"
+                role="status"
+                th:if="${param.logout}">
+
+                💚 Cerraste sesión correctamente.
+                ¡Te esperamos pronto para seguir aprendiendo!
+
+            </div>
+
+            <!-- MENSAJE: ERROR DE AUTENTICACIÓN -->
+            <div
+                class="alert alert--error auth-alert"
+                role="alert"
+                th:if="${param.error}">
+
+                ⚠️ No pudimos iniciar sesión.
+                Revisa tu usuario, correo o contraseña
+                e inténtalo nuevamente.
+
+            </div>
+
+            <!-- FORMULARIO DE LOGIN -->
+            <form
+                class="auth-form"
+                th:action="@{/login}"
+                method="post"
+                novalidate>
+
+                <!-- USUARIO -->
+                <label
+                    class="field__label stack"
+                    for="username">
+
+                    Usuario o correo
+
+                </label>
+
+                <input
+                    class="input"
+                    id="username"
+                    data-login-username
+                    name="username"
+                    type="text"
+                    autocomplete="username"
+                    placeholder="Ingresa tu usuario o correo"
+                    required
+                    maxlength="254"
+                    aria-describedby="username-help">
+
+                    <small
+                        class="field__help"
+                        id="username-help">
+
+                        💡 Ingresa el nombre de usuario o correo
+                        electrónico con el que te registraste.
+                    </small>
+                    
+                    <p
+                        class="field__error"
+                        id="username-error"
+                        role="alert"
+                        hidden>
+                    </p>
+
+                <!-- CONTRASEÑA -->
+                <div
+                    th:replace="~{fragments/ui :: password('current-password','','')}">
+                </div>
+
+                <!-- BOTÓN -->
+                <button
+                    class="button button--primary button--block auth-submit"
+                    type="submit">
+
+                    Iniciar sesión
+
+                </button>
+
+            </form>
+
+            <!-- REGISTRO -->
+            <div class="auth-register">
+
+                <p class="auth-register-message">
+                    🌱 ¿Todavía no tienes cuenta?
+                    ¡Hoy es el mejor momento para comenzar! ✨
+                </p>
+
+                <a
+                    class="auth-register-link"
+                    th:href="@{/register}">
+
+                    Crear mi cuenta
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
 </html>
