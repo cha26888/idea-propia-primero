@@ -54,7 +54,14 @@ if (registerForm && window.fetch) {
       alert.focus();
     };
     registerForm.querySelectorAll('[data-server-error]').forEach(node => node.remove());
-    registerForm.querySelectorAll('[data-error-for]').forEach(node => { node.textContent = ''; });
+    // Limpiar y ocultar errores anteriores
+    registerForm.querySelectorAll('[data-error-for]').forEach(node => {
+
+        node.textContent = '';
+
+        node.hidden = true;
+
+    });
     registerForm.querySelectorAll('[aria-invalid]').forEach(node => node.setAttribute('aria-invalid', 'false'));
     alert.hidden = true;
     submit.disabled = true;
@@ -79,12 +86,33 @@ if (registerForm && window.fetch) {
         return;
       }
       if (response.status !== 400) throw new Error('Server error');
-      for (const field of ['username', 'email', 'password']) {
+      // Mostrar errores específicos debajo de cada campo
+    for (const field of ['username', 'email', 'password']) {
+
         const error = result.errors && result.errors[field];
+
         if (typeof error !== 'string') continue;
-        registerForm.querySelector(`[data-error-for="${field}"]`).textContent = error;
-        registerForm.elements.namedItem(field).setAttribute('aria-invalid', 'true');
-      }
+
+        // Buscar el campo correspondiente
+        const input = registerForm.elements.namedItem(field);
+
+        // Buscar el mensaje de error
+        const errorElement = registerForm.querySelector(
+            `[data-error-for="${field}"]`
+        );
+
+        // Marcar el campo como inválido
+        if (input) {
+            input.setAttribute('aria-invalid', 'true');
+        }
+
+        // Mostrar el mensaje específico
+        if (errorElement) {
+            errorElement.textContent = '⚠️ ' + error;
+            errorElement.hidden = false;
+        }
+
+    }
       showMessage(result.message || 'Revisa tus datos e inténtalo nuevamente.');
     } catch (error) {
       showMessage('No pudimos confirmar el registro. Tus datos siguen aquí. Comprueba tu conexión e inténtalo de nuevo; si la cuenta ya se creó, inicia sesión.');

@@ -44,19 +44,71 @@ public class AuthController {
     }
 
     private void registerIfValid(RegisterForm form, BindingResult errors) {
-        String error = policy.error(form.getPassword());
-        if (error != null && !errors.hasFieldErrors("password"))
-            errors.rejectValue("password", "policy", error);
-        if (errors.hasErrors())
-            return;
-        try {
-            registration.registerStudent(form);
-        } catch (RegistrationException e) {
-            if (e.getField() == null)
-                errors.reject("registration", e.getMessage());
-            else
-                errors.rejectValue(e.getField(), "registration", e.getMessage());
+
+        // 1. Validar la política de contraseña
+        String passwordError = policy.error(form.getPassword());
+
+        if (passwordError != null && !errors.hasFieldErrors("password")) {
+
+            errors.rejectValue(
+                "password",
+                "policy",
+                passwordError
+            );
+
         }
+
+        // 2. Comprobar duplicados en campos con formato válido
+        Map<String, String> duplicates = registration.checkDuplicates(form);
+
+        for (Map.Entry<String, String> entry : duplicates.entrySet()) {
+
+            String field = entry.getKey();
+
+            // Evitar agregar errores repetidos al mismo campo
+            if (!errors.hasFieldErrors(field)) {
+
+                errors.rejectValue(
+                    field,
+                    "registration",
+                    entry.getValue()
+                );
+
+            }
+
+        }
+
+        // 3. Si existen errores, no registrar al usuario
+        if (errors.hasErrors()) {
+            return;
+        }
+
+        // 4. Intentar crear la cuenta
+        try {
+
+            registration.registerStudent(form);
+
+        } catch (RegistrationException e) {
+
+            if (e.getField() == null) {
+
+                errors.reject(
+                    "registration",
+                    e.getMessage()
+                );
+
+            } else {
+
+                errors.rejectValue(
+                    e.getField(),
+                    "registration",
+                    e.getMessage()
+                );
+
+            }
+
+        }
+
     }
 
     @PostMapping("/register")
