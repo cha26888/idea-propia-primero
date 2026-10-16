@@ -12,5 +12,4 @@ public class AccountController {
         model.addAttribute("auxiliar", auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_AUXILIAR")));
         return "auth/welcome";
     }
-    @GetMapping("/admin") public String admin() { return "admin/index"; }
 }
