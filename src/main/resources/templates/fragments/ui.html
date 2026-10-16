@@ -17,13 +17,150 @@
 
 <body>
 <a th:fragment="brand" class="brand" th:href="@{/}">IDEA PROPIA PRIMERO</a>
+
+<!-- FRAGMENTO GENÉRICO PARA CAMPOS DE FORMULARIO -->
 <div th:fragment="field(id, label, type, value, autocomplete, help, error)" class="field">
-<label class="field__label" th:for="${id}" th:text="${label}"></label>
-<input class="input" th:id="${id}" th:name="${id}" th:type="${type}" th:value="${value}" th:autocomplete="${autocomplete}" required
- th:maxlength="${id == 'username' ? 30 : 254}" th:attr="aria-describedby=|${id}-help ${id}-error|,aria-invalid=${error != ''}">
-<small class="field__help" th:id="|${id}-help|" th:text="${help}"></small>
-<p class="field__error" th:id="|${id}-error|" th:attr="data-error-for=${id}" th:text="${error}"></p></div>
+
+    <!-- ETIQUETA -->
+    <label
+        class="field__label"
+        th:for="${id}"
+        th:text="${label}">
+    </label>
+
+    <!-- CAMPO -->
+    <input
+        class="input"
+        th:id="${id}"
+        th:name="${id}"
+        th:type="${type}"
+        th:value="${value}"
+        th:autocomplete="${autocomplete}"
+        required
+        th:maxlength="${id == 'username' ? 30 : 254}"
+        th:attr="aria-describedby=|${id}-help ${id}-error|,aria-invalid=${error != null and error != ''}"
+    >
+
+    <!-- MENSAJE DE AYUDA -->
+    <small
+        class="field__help"
+        th:id="|${id}-help|"
+        th:text="${help}">
+    </small>
+
+    <!-- MENSAJE DE ERROR -->
+    <p
+        class="field__error"
+        th:id="|${id}-error|"
+        th:attr="data-error-for=${id}"
+        th:text="${error}"
+        th:hidden="${error == null or error == ''}">
+    </p>
+
+</div>
+<!-- ==========================================
+     FRAGMENTO DE CONTRASEÑA
+========================================== -->
+
 <div th:fragment="password(autocomplete, help, error)" class="field">
+
+    <!-- ETIQUETA -->
+    <label class="field__label" for="password">
+        Contraseña
+    </label>
+
+    <!-- CONTENEDOR EXCLUSIVO DEL INPUT Y EL OJO -->
+    <div class="password">
+
+        <!-- CAMPO DE CONTRASEÑA -->
+        <input
+            class="input"
+            id="password"
+            name="password"
+            type="password"
+            placeholder="****"
+            required
+            th:autocomplete="${autocomplete}"
+            aria-describedby="password-help password-error"
+            th:attr="aria-invalid=${error != ''}"
+        >
+
+        <!-- BOTÓN MOSTRAR / OCULTAR -->
+        <button
+            class="password-toggle"
+            type="button"
+            data-toggle-password
+            aria-controls="password"
+            aria-label="Mostrar contraseña"
+            aria-pressed="false"
+            title="Mostrar contraseña"
+        >
+
+            <!-- OJO ABIERTO -->
+            <svg
+                class="eye-icon eye-icon--visible"
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+
+            <!-- OJO TACHADO -->
+            <svg
+                class="eye-icon eye-icon--hidden"
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path d="M3 3l18 18"/>
+                <path d="M10.6 5.1A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a15.7 15.7 0 0 1-3.2 4.1"/>
+                <path d="M6.2 6.2C3.5 8 2 12 2 12s3.5 7 10 7a10.5 10.5 0 0 0 4.1-.8"/>
+                <path d="M10 10a3 3 0 0 0 4 4"/>
+            </svg>
+
+        </button>
+
+    </div>
+    <!-- IMPORTANTE: AQUÍ TERMINA .password -->
+
+
+    <!-- MENSAJE DE AYUDA -->
+    <small
+        class="field__help"
+        id="password-help"
+        th:text="${help}">
+    </small>
+
+
+    <!-- MENSAJE DE ERROR -->
+    <p
+        class="field__error"
+        id="password-error"
+        data-error-for="password"
+        role="alert"
+        th:text="${error}"
+        th:hidden="${error == null or error == ''}">
+    </p>
+
+</div>
+<!-- AQUÍ TERMINA EL FRAGMENTO PASSWORD -->
+
 <label class="field__label" for="password">Contraseña</label><div class="password">
 <input
     class="input"
@@ -84,10 +221,15 @@
     </svg>
 </button>
 <small class="field__help" id="password-help" th:text="${help}"></small>
-<p class="field__error" id="password-error" data-error-for="password" th:text="${error}"></p></div>
+<!-- Mensaje de error -->
+    <p
+        class="field__error"
+        id="password-error"
+        data-error-for="password"
+        role="alert"
+        th:text="${error}"
+        hidden>
+    </p>
 </div> <!-- Cierra el fragmento password -->
-<form th:fragment="logout" th:action="@{/logout}" method="post" class="stack">
-    <button class="button button--secondary" type="submit">Cerrar sesión</button>
-</form>
 </body>
 </html>

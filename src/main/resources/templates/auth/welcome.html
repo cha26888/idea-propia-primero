@@ -13,7 +13,7 @@
             <p>Ya estás dentro. Cuando quieras trabajar en tu razonamiento, entra al chat.</p><a
                 class="button button--primary button--block" th:href="@{/chat}">Ir al chat</a>
             <p th:if="${auxiliar}"><a th:href="@{/admin}">Entrar al espacio de auxiliares</a></p>
-            <form th:replace="~{fragments/ui :: logout}"></form>
+            <form th:replace="~{fragments/logout :: logout}"></form>
         </section>
     </main>
 </body>

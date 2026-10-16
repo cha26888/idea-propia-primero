@@ -67,7 +67,8 @@
             <form
                 class="auth-form"
                 th:action="@{/login}"
-                method="post">
+                method="post"
+                novalidate>
 
                 <!-- USUARIO -->
                 <label
@@ -81,6 +82,7 @@
                 <input
                     class="input"
                     id="username"
+                    data-login-username
                     name="username"
                     type="text"
                     autocomplete="username"
@@ -95,8 +97,14 @@
 
                         💡 Ingresa el nombre de usuario o correo
                         electrónico con el que te registraste.
-
                     </small>
+                    
+                    <p
+                        class="field__error"
+                        id="username-error"
+                        role="alert"
+                        hidden>
+                    </p>
 
                 <!-- CONTRASEÑA -->
                 <div
@@ -119,14 +127,14 @@
 
                 <p class="auth-register-message">
                     🌱 ¿Todavía no tienes cuenta?
-                    ¡Hoy es el mejor momento para comenzar!
+                    ¡Hoy es el mejor momento para comenzar! ✨
                 </p>
 
                 <a
                     class="auth-register-link"
                     th:href="@{/register}">
 
-                    Crear mi cuenta ✨
+                    Crear mi cuenta
 
                 </a>
 

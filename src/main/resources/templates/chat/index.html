@@ -22,7 +22,7 @@
     <span th:text="${username}">usuario</span>
     <span class="topbar__role" th:if="${auxiliar}">Auxiliar</span>
   </div>
-  <form th:replace="~{fragments/ui :: logout}"></form>
+  <form th:replace="~{fragments/logout :: logout}"></form>
 </header>
 
 <div class="sidebar-overlay" data-sidebar-overlay></div>

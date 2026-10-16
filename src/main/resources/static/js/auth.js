@@ -97,3 +97,191 @@ if (registerForm && window.fetch) {
     }
   });
 }
+
+/* ==========================================
+   VALIDACIONES DEL FORMULARIO LOGIN
+========================================== */
+
+const loginForm = document.querySelector(
+    'form[action$="/login"]'
+);
+
+if (loginForm) {
+
+    const usernameInput = loginForm.querySelector(
+        '#username'
+    );
+
+    const passwordInput = loginForm.querySelector(
+        '#password'
+    );
+
+    const usernameError = document.getElementById(
+        'username-error'
+    );
+
+    const passwordError = document.getElementById(
+        'password-error'
+    );
+
+    // Mostrar errores debajo de cada campo
+    function showLoginError(input, errorElement, message) {
+
+        if (!input || !errorElement) return;
+
+        errorElement.textContent = message;
+        errorElement.hidden = false;
+
+        input.setAttribute('aria-invalid', 'true');
+    }
+
+    // Eliminar errores cuando se corrigen
+    function clearLoginError(input, errorElement) {
+
+        if (!input || !errorElement) return;
+
+        errorElement.textContent = '';
+        errorElement.hidden = true;
+
+        input.setAttribute('aria-invalid', 'false');
+    }
+
+    // Validar usuario o correo
+    function validateUsername() {
+
+        if (!usernameInput) return true;
+
+        const username = usernameInput.value.trim();
+
+        if (username.length === 0) {
+
+            showLoginError(
+                usernameInput,
+                usernameError,
+                '⚠️ Ingresa tu usuario o correo electrónico.'
+            );
+
+            return false;
+        }
+
+        clearLoginError(usernameInput, usernameError);
+
+        return true;
+    }
+
+    // Validar contraseña
+    function validatePassword() {
+
+        if (!passwordInput) return true;
+
+        if (passwordInput.value.length === 0) {
+
+            showLoginError(
+                passwordInput,
+                passwordError,
+                '⚠️ Ingresa tu contraseña.'
+            );
+
+            return false;
+        }
+
+        clearLoginError(passwordInput, passwordError);
+
+        return true;
+    }
+
+    // Validar al enviar el formulario
+    loginForm.addEventListener('submit', function(event) {
+
+        const validUsername = validateUsername();
+        const validPassword = validatePassword();
+
+        if (!validUsername || !validPassword) {
+
+            event.preventDefault();
+
+            const firstInvalid = loginForm.querySelector(
+                '[aria-invalid="true"]'
+            );
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+            }
+        }
+
+    });
+
+    // Eliminar errores mientras el usuario escribe
+    if (usernameInput) {
+
+        usernameInput.addEventListener('input', () => {
+
+            if (usernameInput.value.trim().length > 0) {
+                clearLoginError(usernameInput, usernameError);
+            }
+
+        });
+    }
+
+    if (passwordInput) {
+
+        passwordInput.addEventListener('input', () => {
+
+            if (passwordInput.value.length > 0) {
+                clearLoginError(passwordInput, passwordError);
+            }
+
+        });
+    }
+
+}
+
+/* ==========================================
+   CONSERVAR USUARIO DESPUÉS DE LOGIN FALLIDO
+========================================== */
+
+const loginUsername = document.querySelector(
+    '#username'
+);
+
+const loginFormPersistence = document.querySelector(
+    'form[action$="/login"]'
+);
+
+if (loginUsername && loginFormPersistence) {
+
+    const storageKey = 'idea-propia-login-username';
+
+    // Recuperar usuario cuando falla el login
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('error')) {
+
+        const savedUsername = sessionStorage.getItem(storageKey);
+
+        if (savedUsername) {
+            loginUsername.value = savedUsername;
+        }
+
+    } else {
+
+        // Eliminar datos temporales cuando no hay error
+        sessionStorage.removeItem(storageKey);
+
+    }
+
+    // Guardar usuario antes de enviar el formulario
+    loginFormPersistence.addEventListener('submit', (event) => {
+
+        if (event.defaultPrevented) {
+            return;
+        }
+
+        sessionStorage.setItem(
+            storageKey,
+            loginUsername.value.trim()
+        );
+
+    });
+
+}
