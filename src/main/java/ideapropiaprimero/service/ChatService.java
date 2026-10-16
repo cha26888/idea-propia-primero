@@ -11,9 +11,11 @@ import java.util.List;
 public class ChatService {
 
     private final AiClient ai;
+    private final ResponseReviewer reviewer;
 
-    public ChatService(AiClient ai) {
+    public ChatService(AiClient ai, ResponseReviewer reviewer) {
         this.ai = ai;
+        this.reviewer = reviewer;
     }
 
     public String responder(List<ChatMessage> historial) {
@@ -473,6 +475,13 @@ public class ChatService {
 
         messages.addAll(historial);
 
-        return ai.responder(messages);
+        String borrador = ai.responder(messages);
+        String politica = messages.get(0).content();
+
+        if (reviewer.aprobar(politica, historial, borrador)) {
+            return borrador;
+        }
+
+        return "Para continuar, comparte tu intento o indica qué concepto necesitas aclarar.";
     }
 }
