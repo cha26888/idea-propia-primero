@@ -34,12 +34,7 @@
     </div>
     <p class="sidebar__label">TUS CHATS</p>
     <ul class="sidebar__list" data-chat-history>
-      <li class="sidebar__item">
-        <a class="sidebar__link" href="#" aria-current="true">
-          <span class="sidebar__link-title">Conversación actual</span>
-          <span class="sidebar__link-meta">Ahora</span>
-        </a>
-      </li>
+      <li class="sidebar__empty">Cargando conversaciones…</li>
     </ul>
     <div class="sidebar__footer">
       <a href="#" aria-disabled="true">Diario <span class="sidebar__soon">Próximamente</span></a>
@@ -54,7 +49,7 @@
         <h1>Cuéntame en qué estás trabajando.</h1>
         <p>Antes de darte la respuesta, te voy a pedir que me muestres cómo lo intentaste tú primero. Así el razonamiento sigue siendo tuyo.</p>
       </div>
-      <div class="chat-log" data-chat-log></div>
+      <div class="chat-log" data-chat-log role="log" aria-live="polite"></div>
     </div>
 
     <div class="composer">
