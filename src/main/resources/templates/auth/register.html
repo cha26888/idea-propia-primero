@@ -1,36 +1,137 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/ui :: head('Crear cuenta')}">
-    <link rel="icon" type="image/png" href="/images/icon.png">
-</head>
+<head th:replace="~{fragments/ui :: head('Crear cuenta')}"></head>
 
 <body>
-    <main class="page">
-        <section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a>
-            <h1 class="title" id="page-title">Empieza con tu propia idea.</h1>
-            <p>Crea tu cuenta de estudiante.</p>
-            <form th:action="@{/register}" th:object="${form}" method="post" data-register
-                th:attr="data-login-url=@{/login?registered},data-submit-url=@{/register/submit}" novalidate>
-                <div class="alert alert--error" role="alert" aria-live="assertive" tabindex="-1" data-form-alert
-                    th:hidden="${!#fields.hasErrors('*')}">
-                    <span data-form-message>Revisa los campos indicados para crear tu cuenta.</span>
-                    <p th:each="e : ${#fields.globalErrors()}" th:text="${e}" data-server-error></p>
-                </div>
-                <div
-                    th:replace="~{fragments/ui :: field('username','Usuario o apodo','text',${form.username},'username','3–30 letras sin tildes, números, puntos o guiones. Sin espacios.',${#fields.hasErrors('username') ? #fields.errors('username')[0] : ''})}">
-                </div>
-                <div
-                    th:replace="~{fragments/ui :: field('email','Correo','email',${form.email},'email','También podrás usarlo para iniciar sesión.',${#fields.hasErrors('email') ? #fields.errors('email')[0] : ''})}">
-                </div>
-                <div
-                    th:replace="~{fragments/ui :: password('new-password',|Mínimo ${passwordMin} caracteres. Sin requisitos de mayúsculas, números ni símbolos.|,${#fields.hasErrors('password') ? #fields.errors('password')[0] : ''})}">
-                </div>
-                <button class="button button--primary button--block" type="submit" data-submit>Crear cuenta</button>
-            </form>
-            <p>¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a></p>
-        </section>
-    </main>
-</body>
 
+    <main class="page">
+
+        <section class="card auth-card" aria-labelledby="page-title">
+
+            <!-- LOGOTIPO -->
+            <a th:replace="~{fragments/ui :: brand}"></a>
+
+            <!-- MENSAJE MOTIVADOR -->
+            <div class="motivational-note" role="note">
+                🌱 ¡Todo gran aprendizaje comienza con una pequeña decisión! ✨
+            </div>
+
+            <!-- TÍTULO -->
+            <h1 class="title auth-title" id="page-title">
+                ¡Tu camino comienza aquí!
+            </h1>
+
+            <!-- DESCRIPCIÓN -->
+            <p class="auth-description">
+                Cada persona tiene una manera única de aprender,
+                y queremos ayudarte a descubrir la tuya.
+
+                Crea tu cuenta y comienza a fortalecer tus ideas,
+                desarrollar tu pensamiento crítico y confiar
+                en tus propias capacidades. 💚
+            </p>
+
+            <!-- FORMULARIO DE REGISTRO -->
+            <form
+                class="auth-form"
+                th:action="@{/register}"
+                th:object="${form}"
+                method="post"
+                data-register
+                th:attr="data-login-url=@{/login?registered},data-submit-url=@{/register/submit}"
+                novalidate>
+
+                <!-- ALERTA GENERAL DE ERRORES -->
+                <div
+                    class="alert alert--error auth-alert"
+                    role="alert"
+                    aria-live="assertive"
+                    tabindex="-1"
+                    data-form-alert
+                    th:hidden="${!#fields.hasErrors('*')}">
+
+                    <span data-form-message>
+                        ⚠️ Algunos datos necesitan una pequeña corrección.
+                        Revisa los campos indicados e inténtalo nuevamente.
+                    </span>
+
+                    <p
+                        th:each="e : ${#fields.globalErrors()}"
+                        th:text="${e}"
+                        data-server-error>
+                    </p>
+
+                </div>
+
+                <!-- USUARIO -->
+                <div
+                    th:replace="~{fragments/ui :: field(
+                        'username',
+                        'Usuario o apodo',
+                        'text',
+                        ${form.username},
+                        'username',
+                        '💡 Utiliza entre 3 y 30 caracteres: letras sin tildes, números, puntos, guiones o guiones bajos. Sin espacios.',
+                        ${#fields.hasErrors('username') ? #fields.errors('username')[0] : ''}
+                    )}">
+                </div>
+
+                <!-- CORREO -->
+                <div
+                    th:replace="~{fragments/ui :: field(
+                        'email',
+                        'Correo electrónico',
+                        'email',
+                        ${form.email},
+                        'email',
+                        '📧 Utiliza un correo válido. También podrás usarlo para iniciar sesión.',
+                        ${#fields.hasErrors('email') ? #fields.errors('email')[0] : ''}
+                    )}">
+                </div>
+
+                <!-- CONTRASEÑA -->
+                <div
+                    th:replace="~{fragments/ui :: password(
+                        'new-password',
+                        |🔒 Mínimo ${passwordMin} caracteres. No necesitas utilizar mayúsculas, números ni símbolos obligatoriamente.|,
+                        ${#fields.hasErrors('password') ? #fields.errors('password')[0] : ''}
+                    )}">
+                </div>
+
+                <!-- BOTÓN DE REGISTRO -->
+                <button
+                    class="button button--primary button--block auth-submit"
+                    type="submit"
+                    data-submit>
+
+                    Crear mi cuenta
+
+                </button>
+
+            </form>
+
+            <!-- INICIO DE SESIÓN -->
+            <div class="auth-register">
+
+                <p class="auth-register-message">
+                    💛 ¿Ya formas parte de esta comunidad?
+                    ¡Nos alegra tenerte de vuelta!
+                </p>
+
+                <a
+                    class="auth-register-link"
+                    th:href="@{/login}">
+
+                    Iniciar sesión ✨
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
 </html>
