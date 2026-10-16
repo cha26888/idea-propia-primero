@@ -107,11 +107,11 @@ Prueba manual antes de integrar:
 - [x] Base Spring Boot, estructura, GitHub y documentación inicial.
 - [x] Página inicial original comprobada por el equipo.
 - [x] Código de autenticación y SQLite preparado en esta entrega.
-- [ ] Ejecutar y aprobar las pruebas de esta entrega en Java 25.
-- [ ] Confirmar el flujo manual, persistencia tras reinicio y panel de auxiliar.
-- [ ] Revisar e integrar el pull request de autenticación.
-- [ ] Actualizar UML, investigación de persistencia y planificación.
-- [ ] Implementar chats, mensajes, memoria, IA e historiales.
+- [X] Ejecutar y aprobar las pruebas de esta entrega en Java 25.
+- [X] Confirmar el flujo manual, persistencia tras reinicio y panel de auxiliar.
+- [X] Revisar e integrar el pull request de autenticación.
+- [X] Actualizar UML, investigación de persistencia y planificación.
+- [X] Implementar chats, mensajes, memoria, IA e historiales.
 - [ ] Implementar consultas del auxiliar, diario y tareas según prioridad.
 - [ ] Mostrar a usuarios y documentar retroalimentación.
 

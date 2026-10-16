@@ -1,1 +1,21 @@
-<!DOCTYPE html><html lang="es" xmlns:th="http://www.thymeleaf.org"><head th:replace="~{fragments/ui :: head('Bienvenida')}"></head><body><main class="page"><section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a><span class="badge">TU ESPACIO</span><h1 class="title" id="page-title">Hola, <span th:text="${username}">usuario</span>.</h1><p>Ya estás dentro. Pronto podrás compartir tus ideas y trabajar en tus conversaciones.</p><p th:if="${auxiliar}"><a th:href="@{/admin}">Entrar al espacio de auxiliares</a></p><form th:replace="~{fragments/ui :: logout}"></form></section></main></body></html>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/ui :: head('Bienvenida')}">
+    <link rel="icon" type="image/png" href="/images/icon.png">
+</head>
+
+<body>
+    <main class="page">
+        <section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a><span
+                class="badge">TU ESPACIO</span>
+            <h1 class="title" id="page-title">Hola, <span th:text="${username}">usuario</span>.</h1>
+            <p>Ya estás dentro. Cuando quieras trabajar en tu razonamiento, entra al chat.</p><a
+                class="button button--primary button--block" th:href="@{/chat}">Ir al chat</a>
+            <p th:if="${auxiliar}"><a th:href="@{/admin}">Entrar al espacio de auxiliares</a></p>
+            <form th:replace="~{fragments/logout :: logout}"></form>
+        </section>
+    </main>
+</body>
+
+</html>

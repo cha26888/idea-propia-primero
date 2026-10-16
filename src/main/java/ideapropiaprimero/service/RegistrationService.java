@@ -4,6 +4,10 @@ import ideapropiaprimero.exception.RegistrationException;
 import ideapropiaprimero.model.Role;
 import ideapropiaprimero.repository.UserRepository;
 import jakarta.validation.Validator;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +20,40 @@ public class RegistrationService {
     public RegistrationService(UserRepository users, PasswordEncoder encoder, PasswordPolicy policy, Validator validator) {
         this.users = users; this.encoder = encoder; this.policy = policy; this.validator = validator;
     }
+    
     public void registerStudent(RegisterForm form) { create(form, Role.STUDENT); }
+    /**
+     * Comprueba si el usuario y el correo ya están registrados.
+     * Devuelve todos los errores encontrados.
+     *
+     * No crea usuarios ni modifica la base de datos.
+     */
+    public Map<String, String> checkDuplicates(RegisterForm form) {
+
+        Map<String, String> errors = new LinkedHashMap<>();
+
+        // Comprobar si el usuario ya existe
+        if (users.findByLogin(form.getUsername()).isPresent()) {
+
+            errors.put(
+                "username",
+                "Ese usuario ya está ocupado. Elige otro apodo."
+            );
+
+        }
+
+        // Comprobar si el correo ya existe
+        if (users.findByLogin(form.getEmail()).isPresent()) {
+
+            errors.put(
+                "email",
+                "Ese correo ya tiene una cuenta. Inicia sesión o utiliza otro correo."
+            );
+
+        }
+
+        return errors;
+    }
     /** Solo utilizado por el aprovisionamiento local, nunca desde el formulario público. */
     public void provisionAuxiliar(RegisterForm form) { create(form, Role.AUXILIAR); }
     private void create(RegisterForm form, Role role) {
