@@ -1,86 +1,231 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/ui :: head('Inicio')}"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Idea propia primero: un espacio para estudiantes donde el agente te pide tu propio intento antes de ayudarte.">
+    <title>Idea propia primero · Tu idea primero, la IA después</title>
+    <link rel="icon" type="image/png" href="/images/icon.png" th:href="@{/images/icon.png}">
+    <link rel="stylesheet" href="/css/theme.css" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" href="/css/components.css" th:href="@{/css/components.css}">
+    <link rel="stylesheet" href="/css/landing.css" th:href="@{/css/landing.css}">
+    <script defer src="/js/landing.js" th:src="@{/js/landing.js}"></script>
+</head>
 
-<body>
+<body class="landing">
+    <a class="l-skip" href="#contenido">Saltar al contenido</a>
 
-    <main class="page">
-
-        <section class="card home-card" aria-labelledby="page-title">
-
-            <!-- LOGOTIPO -->
-            <a th:replace="~{fragments/ui :: brand}"></a>
-
-            <!-- MENSAJE MOTIVADOR -->
-            <div class="motivational-note">
-                🌟 ¡Confía en ti! Porque cada intento te hace mejor. 💛
-            </div>
-
-            <!-- TÍTULO PRINCIPAL -->
-            <h1 class="title home-title" id="page-title">
-                Tú eres el protagonista.
-            </h1>
-
-            <!-- DESCRIPCIÓN -->
-            <p class="home-description">
-
-                ¡Bienvenido a Idea Propia Primero!
-
-                Este es un espacio diseñado para fortalecer tu
-                pensamiento crítico, desarrollar tus propias ideas
-                y descubrir todo lo que eres capaz de lograr.
-
-                Aquí, antes de recibir ayuda de la inteligencia
-                artificial, tendrás la oportunidad de reflexionar,
-                analizar y construir tus propias respuestas.
-
-                Recuerda que aprender no significa tener siempre
-                la respuesta correcta, sino atreverte a pensar,
-                equivocarte y mejorar.
-
-                La inteligencia artificial será tu compañera
-                de aprendizaje, pero el verdadero protagonista
-                siempre serás tú.
-
-            </p>
-
-            <!-- FRASE MOTIVADORA -->
-            <blockquote class="inspirational-quote">
-
-                <p>
-                    "El aprendizaje nunca agota la mente".
-                </p>
-
-                <footer>
-                    — Leonardo da Vinci
-                </footer>
-
-            </blockquote>
-
-            <!-- BOTÓN DE INICIO DE SESIÓN -->
-            <a
-                class="button button--primary button--block"
-                th:href="@{/login}">
-
-                Iniciar sesión
-
+    <header class="l-nav" data-l-nav>
+        <div class="l-wrap l-nav__bar">
+            <a class="l-brand" href="/" th:href="@{/}">
+                <img src="/images/icon.png" th:src="@{/images/icon.png}" alt="" width="28" height="28">
+                IDEA PROPIA PRIMERO
             </a>
+            <button class="l-nav__toggle" type="button" data-l-toggle aria-label="Abrir menú" aria-expanded="false"><span></span></button>
+            <nav class="l-nav__links" aria-label="Principal">
+                <a href="#problema">El problema</a>
+                <a href="#como-funciona">Cómo funciona</a>
+                <a href="#preguntas">Preguntas frecuentes</a>
+            </nav>
+            <div class="l-nav__actions">
+                <a class="l-link" href="/login" th:href="@{/login}">Iniciar sesión</a>
+                <a class="button button--primary" href="/register" th:href="@{/register}">Crear cuenta</a>
+            </div>
+        </div>
+    </header>
 
-            <!-- REGISTRO -->
-            <p class="register-text">
+    <main id="contenido">
 
-                ¿Primera vez aquí?
+        <section class="l-hero" aria-labelledby="hero-title">
+            <div class="l-wrap l-hero__grid">
+                <div>
+                    <span class="l-eyebrow">Pensamiento crítico primero</span>
+                    <h1 id="hero-title">Tu idea primero. <em>La IA, después.</em></h1>
+                    <p class="l-lead">
+                        Un espacio para estudiantes donde el agente te pide tu propio intento antes de ayudarte,
+                        para que el razonamiento siga siendo tuyo.
+                    </p>
+                </div>
 
-                <a th:href="@{/register}">
-                    Crear mi cuenta
-                </a>
+                <aside class="l-access" aria-labelledby="access-title">
+                    <h2 id="access-title">Empieza ahora</h2>
+                    <p class="l-access__sub">Entra con tu usuario o con tu correo.</p>
+                    <a class="button button--primary button--block button--lg" href="/login" th:href="@{/login}">Iniciar sesión</a>
+                    <div class="l-or" aria-hidden="true">o</div>
+                    <a class="button button--secondary button--block button--lg" href="/register" th:href="@{/register}">Crear mi cuenta</a>
+                    <p class="l-fine">Un proyecto del curso de Programación Orientada a Objetos de la Universidad del Valle de Guatemala.</p>
+                </aside>
+            </div>
+        </section>
 
-            </p>
+        <section class="l-demo" aria-label="Ejemplo de conversación">
+            <div class="l-wrap">
+                <div class="l-demo__frame">
+                    <span class="l-demo__tag">Ejemplo ilustrativo</span>
+                    <div class="l-chat">
+                        <div class="l-msg l-msg--user"><small>Tú</small>¿Me das la respuesta del ejercicio 3 de la hoja de Cálculo?</div>
+                        <div class="l-msg l-msg--agent"><small>Agente</small>Antes de avanzar, cuéntame cómo lo intentaste tú. ¿Qué paso ya probaste y dónde te trabaste?</div>
+                        <div class="l-msg l-msg--user"><small>Tú</small>Derivé con la regla de la cadena, pero no sé qué hacer con el exponente.</div>
+                        <div class="l-msg l-msg--agent"><small>Agente</small>Buen punto de partida: tu planteamiento va bien. Revisa qué función es la de afuera y cuál la de adentro, y dime qué obtienes.</div>
+                        <div class="l-msg l-msg--note"><small>Así funciona</small>Primero tu razonamiento. Después, la ayuda.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section class="l-section l-section--tint" id="problema" aria-labelledby="problema-title">
+            <div class="l-wrap">
+                <div class="l-head">
+                    <span class="l-kicker">El problema</span>
+                    <h2 id="problema-title">Pedir la respuesta es fácil. Pensarla es lo que enseña.</h2>
+                    <p>La dependencia excesiva de la inteligencia artificial está debilitando el pensamiento crítico y la creatividad de quienes estudian.</p>
+                </div>
+                <div class="l-grid">
+                    <article class="l-card l-card--plain">
+                        <span class="l-num" aria-hidden="true">1</span>
+                        <h3>Respuestas sin esfuerzo</h3>
+                        <p>Cuando la IA resuelve todo de inmediato, el estudiante deja de practicar el razonamiento propio.</p>
+                    </article>
+                    <article class="l-card l-card--plain">
+                        <span class="l-num" aria-hidden="true">2</span>
+                        <h3>Entregas a último minuto</h3>
+                        <p>La procrastinación y las redes sociales normalizan trabajos hechos sin esfuerzo intelectual.</p>
+                    </article>
+                    <article class="l-card l-card--plain">
+                        <span class="l-num" aria-hidden="true">3</span>
+                        <h3>Desconexión</h3>
+                        <p>Delegarlo todo aleja a la persona de su propio proceso, de sus ideas y de su entorno.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="l-section" id="como-funciona" aria-labelledby="como-title">
+            <div class="l-wrap">
+                <div class="l-head">
+                    <span class="l-kicker">Cómo funciona</span>
+                    <h2 id="como-title">Tres pasos, y el protagonista eres tú</h2>
+                    <p>La IA es tu compañera de aprendizaje. No sustituye tu trabajo: lo impulsa.</p>
+                </div>
+                <div class="l-grid">
+                    <article class="l-card">
+                        <span class="l-num" aria-hidden="true">1</span>
+                        <h3>Cuéntanos en qué trabajas</h3>
+                        <p>Abre el chat y describe tu tarea, ejercicio o duda.</p>
+                        <ul class="l-list">
+                            <li>Escribe con tus propias palabras</li>
+                            <li>Guarda tus conversaciones en el historial</li>
+                            <li>Entra con usuario o correo</li>
+                        </ul>
+                    </article>
+                    <article class="l-card l-card--hi">
+                        <span class="l-num" aria-hidden="true">2</span>
+                        <h3>Muestra tu intento</h3>
+                        <p>El agente te pide primero tu razonamiento, tu cálculo o tu código.</p>
+                        <ul class="l-list">
+                            <li>Equivocarte también cuenta</li>
+                            <li>Nadie te regala la solución de entrada</li>
+                            <li>Tu avance es el punto de partida</li>
+                        </ul>
+                    </article>
+                    <article class="l-card">
+                        <span class="l-num" aria-hidden="true">3</span>
+                        <h3>Avanza con guía</h3>
+                        <p>Con tu intento sobre la mesa, el agente te ayuda a corregir y seguir.</p>
+                        <ul class="l-list">
+                            <li>Pistas y preguntas a tu medida</li>
+                            <li>Retroalimentación sobre tu propio trabajo</li>
+                            <li>Aprendes más, dependes menos</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="l-section" style="padding-top:0" aria-labelledby="cta-title">
+            <div class="l-wrap">
+                <div class="l-cta">
+                    <h2 id="cta-title">Atrévete a pensar primero</h2>
+                    <p>Aprender no es tener siempre la respuesta correcta, sino intentarlo, equivocarte y mejorar.</p>
+                    <div class="l-cta__actions">
+                        <a class="button button--primary button--lg" href="/register" th:href="@{/register}">Crear mi cuenta</a>
+                        <a class="button button--secondary button--lg" href="/login" th:href="@{/login}">Iniciar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="l-section l-section--tint" id="preguntas" aria-labelledby="faq-title">
+            <div class="l-wrap">
+                <div class="l-head">
+                    <span class="l-kicker">Ayuda</span>
+                    <h2 id="faq-title">Preguntas frecuentes</h2>
+                </div>
+                <div class="l-faq">
+                    <details>
+                        <summary>¿Qué es Idea propia primero?</summary>
+                        <p>Es una aplicación web para fortalecer el razonamiento propio. Antes de recibir ayuda de la inteligencia artificial, reflexionas y construyes tu propio intento.</p>
+                    </details>
+                    <details>
+                        <summary>¿El agente me va a dar las respuestas directamente?</summary>
+                        <p>No de entrada. Primero te pide que muestres cómo lo intentaste. Con tu intento como base, te orienta, te corrige y te ayuda a avanzar.</p>
+                    </details>
+                    <details>
+                        <summary>¿Cómo creo mi cuenta?</summary>
+                        <p>Entra a «Crear mi cuenta» y escribe un usuario, tu correo y una contraseña. Después podrás iniciar sesión con tu usuario o con tu correo.</p>
+                    </details>
+                    <details>
+                        <summary>¿Qué pasa si me equivoco?</summary>
+                        <p>Nada grave: equivocarse es parte de aprender. Tu intento, aunque esté incompleto, es lo que permite que el agente te ayude mejor.</p>
+                    </details>
+                    <details>
+                        <summary>¿Quién hizo este proyecto?</summary>
+                        <p>Es un proyecto académico del curso de Programación Orientada a Objetos de la Universidad del Valle de Guatemala (Sección 30, Grupo 3).</p>
+                    </details>
+                </div>
+            </div>
         </section>
 
     </main>
 
+    <footer class="l-footer">
+        <div class="l-wrap">
+            <div class="l-footer__grid">
+                <div>
+                    <a class="l-brand" href="/" th:href="@{/}">IDEA PROPIA PRIMERO</a>
+                    <p class="l-footer__about">Tú eres el protagonista. La inteligencia artificial es tu compañera de aprendizaje.</p>
+                </div>
+                <div>
+                    <h3>Plataforma</h3>
+                    <ul>
+                        <li><a href="/login" th:href="@{/login}">Iniciar sesión</a></li>
+                        <li><a href="/register" th:href="@{/register}">Crear cuenta</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Conoce más</h3>
+                    <ul>
+                        <li><a href="#problema">El problema</a></li>
+                        <li><a href="#como-funciona">Cómo funciona</a></li>
+                        <li><a href="#preguntas">Preguntas frecuentes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Proyecto</h3>
+                    <ul>
+                        <li>Universidad del Valle de Guatemala</li>
+                        <li>Programación Orientada a Objetos</li>
+                        <li>Sección 30 · Grupo 3</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="l-footer__bottom">
+                <span>© 2026 Idea propia primero</span>
+                <span>Proyecto académico</span>
+            </div>
+        </div>
+    </footer>
 </body>
+
 </html>
