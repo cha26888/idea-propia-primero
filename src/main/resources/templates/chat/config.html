@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+<script th:src="@{/js/theme.js}"></script>
+<link rel="icon" type="image/png" href="/images/config.png">
+<link rel="stylesheet" th:href="@{/css/components.css}">
+<link rel="stylesheet" th:href="@{/css/config.css}">
+<script defer th:src="@{/js/settings.js}"></script>
+</head>
+<body>
+    
+
+<main class="settings">
+  <header class="settings__header">
+    <h1>Configuración</h1>
+    <p>Personaliza tu experiencia con la IA.</p>
+  </header>
+
+  <section class="settings__section">
+    <h2>Apariencia</h2>
+
+    <label for="theme">Tema</label>
+    <select id="theme">
+      <option value="light">Claro</option>
+      <option value="dark">Oscuro</option>
+      <option value="system">Sistema</option>
+    </select>
+
+  
+    
+
+<div class="color-picker">
+    <label for="accent-color">
+        Color principal
+    </label>
+
+    <input
+        type="color"
+        id="accent-color"
+        value="#235f49"
+    >
+
+    <span id="color-value">#235F49</span>
+
+    <button type="button" id="reset-color">
+        Restablecer
+    </button>
+</div>
+
+
+  </section>
+
+  <section class="settings__section">
+    <h2>Experiencia</h2>
+
+    <label>
+      <input type="checkbox" id="animations" checked>
+      Activar animaciones
+    </label>
+  </section>
+<a class="button button--secondary" th:href="@{/chat}"> Volver </a>
+</main>
+<script src="/js/theme.js"></script>
+<script src="/js/settings.js"></script>
+</body>
+</html>

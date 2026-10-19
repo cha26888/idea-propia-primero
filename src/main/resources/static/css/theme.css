@@ -1,5 +1,6 @@
 /* Tema global: colores, tipografia, espaciado y medidas. */
 :root {
+    color-scheme: light;
     --color-bg: #f2f5ef;
     --color-surface: #fff;
     --color-text: #203c35;
@@ -26,4 +27,33 @@
     --radius-card: 1.25rem;
     --width-form: 34rem;
     --shadow-card: 0 18px 60px #203c3510;
+    --color-on-primary: #ffffff;
+    --color-footer-bg: #203c35;
+}
+/* Tema oscuro: cambia las mismas variables del tema claro. */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-bg: #141c19;
+    --color-surface: #1e2a25;
+    --color-text: #e7f0ea;
+    --color-muted: #b0c2b7;
+    --color-border: #718b7d;
+
+    /* Colores semánticos independientes del acento elegido. */
+    --color-error: #ffb4ac;
+    --color-error-bg: #451f1c;
+    --color-success: #a1e0b5;
+    --color-success-bg: #183c27;
+    --color-focus: #f4cc70;
+
+    --color-note-bg: #3a3018;
+    --color-note-text: #ffe399;
+    --color-note-border: #cba54b;
+
+    /* Fondos del chat. */
+    --color-agent-bg: #29382f;
+    --color-evidence-bg: #3a3018;
+
+    --shadow-card: 0 18px 60px #00000030;
 }

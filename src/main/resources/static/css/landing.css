@@ -7,7 +7,7 @@
 .l-skip{position:absolute;left:-9999px;top:0;background:var(--color-primary);color:#fff;padding:.6rem 1rem;z-index:100}
 .l-skip:focus{left:var(--space-2);top:var(--space-1)}
 
-.l-nav{position:sticky;top:0;z-index:50;background:#f2f5efec;backdrop-filter:blur(8px);border-bottom:1px solid transparent;transition:border-color .2s}
+.l-nav{position:fixed;top:0;left: 0;width: 100%;z-index:50;background:#f2f5efec;backdrop-filter:blur(8px);border-bottom:1px solid transparent;transition:border-color .2s}
 .l-nav.is-scrolled{border-color:var(--l-line)}
 .l-nav__bar{display:flex;align-items:center;gap:var(--space-3);height:4.25rem}
 .l-brand{display:flex;align-items:center;gap:.6rem;color:var(--color-text);text-decoration:none;font-weight:800;letter-spacing:.12em;font-size:var(--text-small)}

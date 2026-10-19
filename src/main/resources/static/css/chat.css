@@ -301,7 +301,7 @@ body.chat-body {
 
 .msg--user .msg__bubble {
   background: var(--color-user-bg);
-  color: var(--color-surface);
+  color: var(--color-on-primary);
   border-bottom-right-radius: .3rem
 }
 
@@ -427,7 +427,7 @@ body.chat-body {
   border-radius: 50%;
   border: 0;
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-on-primary);
   display: flex;
   align-items: center;
   justify-content: center;

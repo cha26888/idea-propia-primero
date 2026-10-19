@@ -23,6 +23,7 @@
     <span class="topbar__role" th:if="${auxiliar}">Auxiliar</span>
   </div>
   <form th:replace="~{fragments/logout :: logout}"></form>
+  <a class="button button--secondary" th:href="@{/config}">⚙️</a>
 </header>
 
 <div class="sidebar-overlay" data-sidebar-overlay></div>
@@ -67,5 +68,8 @@
   </section>
 </div>
 
+
+<script src="/js/theme.js"></script>
 </body>
+
 </html>
