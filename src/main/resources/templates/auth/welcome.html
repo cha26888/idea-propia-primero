@@ -1,22 +1,98 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/ui :: head('Bienvenida')}">
-    <link rel="icon" type="image/png" href="/images/icon.png">
-</head>
+<head th:replace="~{fragments/ui :: head('Bienvenida')}"></head>
 
-<body>
+<body class="welcome-page">
+    
+    <link rel="stylesheet"
+      th:href="@{/css/welcome.css}"
+      href="/css/welcome.css">
+
     <main class="page">
-        <section class="card" aria-labelledby="page-title"><a th:replace="~{fragments/ui :: brand}"></a><span
-                class="badge">TU ESPACIO</span>
-            <h1 class="title" id="page-title">Hola, <span th:text="${username}">usuario</span>.</h1>
-            <p>Ya estás dentro. Cuando quieras trabajar en tu razonamiento, entra al chat.</p><a
-                class="button button--primary button--block" th:href="@{/chat}">Ir al chat</a>
-            <p th:if="${auxiliar}"><a th:href="@{/admin}">Entrar al espacio de auxiliares</a></p>
-            <form th:replace="~{fragments/logout :: logout}"></form>
+
+        <section class="card welcome-hub" aria-labelledby="page-title">
+
+            <!-- Identidad del proyecto -->
+            <a th:replace="~{fragments/ui :: brand}"></a>
+
+            <!-- Bienvenida -->
+            <header class="welcome-header">
+
+                <h1 class="title" id="page-title">
+                    ¡Hola, <span th:text="${username}">usuario</span>!
+                </h1>
+
+            </header>
+
+            <!-- Servicios -->
+            <section class="welcome-services" aria-labelledby="services-title">
+
+                <h2 id="services-title">Explora nuestras herramientas</h2>
+
+                <!-- Chat disponible -->
+                <article class="welcome-service welcome-service--active">
+
+                    <h3>Chat</h3>
+
+                    <p>
+                        Aprende con ayuda de la inteligencia artificial
+                        sin dejar de pensar por ti mismo.
+                    </p>
+
+                    <a class="button button--primary button--block"
+                       th:href="@{/chat}">
+                        Ir al chat →
+                    </a>
+
+                </article>
+
+            </section>
+
+            <!-- Proximos servicios -->
+            <section class="welcome-coming" aria-labelledby="coming-title">
+
+                <h2 id="coming-title">Próximamente</h2>
+
+                <p>
+                    Estamos preparando nuevas herramientas
+                    para fortalecer tu aprendizaje.
+                </p>
+
+                <div class="welcome-coming__grid">
+
+                    <article class="welcome-coming__item">
+                        <h3>Journal</h3>
+                        <p>Tu diario de reflexión.</p>
+                    </article>
+
+                    <article class="welcome-coming__item">
+                        <h3>Tasks</h3>
+                        <p>Retos del mundo real.</p>
+                    </article>
+
+                </div>
+
+            </section>
+
+            <!-- Acceso de auxiliares -->
+            <p class="welcome-admin" th:if="${auxiliar}">
+                <a th:href="@{/admin}">
+                    Entrar al espacio de auxiliares
+                </a>
+            </p>
+
+            <!-- Cerrar sesion -->
+            <div class="welcome-logout">
+                <form th:replace="~{fragments/logout :: logout}"></form>
+            </div>
+
         </section>
+
     </main>
+
     <script src="/js/theme.js"></script>
+
 </body>
 
 </html>
