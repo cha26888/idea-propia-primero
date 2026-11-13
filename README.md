@@ -4,6 +4,8 @@ Proyecto POO UVG · Sección 30 · Grupo 3.
 
 Aplicación web para fortalecer el razonamiento propio antes de recibir ayuda de IA.
 
+El panel **Mi estudio** (/study) reúne perfil y recuerdos editables, pendientes, importación de calendario .ics, diario, práctica diaria y guías. El chat permite buscar, renombrar y compartir una copia revocable de la conversación. Véanse [alcance y arquitectura](docs/architecture/estudio.md) y [recorrido de demostración](docs/testing/estudio-entrega.md).
+
 
 ## Requisitos y ejecución (Windows CMD)
 

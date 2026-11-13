@@ -324,6 +324,46 @@ body.chat-body {
   border-color: var(--color-evidence-border)
 }
 
+/* Formato del contenido del tutor; las preguntas y los errores siguen como texto. */
+.msg__bubble--formatted {
+  white-space: normal;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.msg__bubble--formatted > :first-child { margin-top: 0; }
+.msg__bubble--formatted > :last-child { margin-bottom: 0; }
+.msg__bubble--formatted p { margin: .65em 0; }
+.msg__bubble--formatted :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 1.08em;
+  line-height: 1.35;
+  margin: 1em 0 .45em;
+}
+.msg__bubble--formatted :is(ul, ol) { padding-left: 1.5em; margin: .65em 0; }
+.msg__bubble--formatted li + li { margin-top: .35em; }
+.msg__bubble--formatted blockquote {
+  margin: .8em 0;
+  padding-left: .85em;
+  border-left: 3px solid var(--color-border);
+}
+.msg__bubble--formatted a { color: var(--color-focus); text-decoration: underline; }
+.msg__bubble--formatted pre {
+  white-space: pre;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: .8em;
+  border: 1px solid var(--color-border);
+  border-radius: .5rem;
+}
+.msg__bubble--formatted code { font-family: monospace; font-size: .92em; }
+.msg__bubble--formatted :not(pre) > code { white-space: break-spaces; }
+.msg__bubble--formatted hr { border: 0; border-top: 1px solid var(--color-border); margin: 1em 0; }
+.msg__bubble--formatted table { display: block; overflow-x: auto; border-collapse: collapse; }
+.msg__bubble--formatted :is(th, td) { border: 1px solid var(--color-border); padding: .4em .6em; }
+.msg__bubble--formatted .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: .2em 0; }
+.msg__bubble--formatted .katex { font-size: 1.08em; }
+
 .msg--error .msg__bubble {
   background: var(--color-error-bg);
   color: var(--color-error);
@@ -388,6 +428,40 @@ body.chat-body {
   margin: 0 auto .5rem;
   font-size: .78rem;
   color: var(--color-muted)
+}
+
+.tutor-mode {
+  max-width: 46rem;
+  margin: 0 auto var(--space-1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-small);
+}
+
+.tutor-mode select {
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  padding: var(--space-1);
+}
+
+.tutor-mode select:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.tutor-mode p {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.tutor-mode [data-tutor-mode-status]:empty {
+  display: none;
 }
 
 .composer__form {
@@ -507,6 +581,7 @@ body.chat-body {
   }
 }
 
+
 /* Servicios futuros no interactivos */
 
 .sidebar__future {
@@ -519,3 +594,4 @@ body.chat-body {
     font-size: var(--text-small);
     color: var(--color-muted);
 }
+
