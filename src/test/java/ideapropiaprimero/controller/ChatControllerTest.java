@@ -11,6 +11,7 @@ import ideapropiaprimero.repository.ChatRepository;
 import ideapropiaprimero.repository.UserRepository;
 import ideapropiaprimero.service.ChatService;
 import ideapropiaprimero.service.StudyService;
+import ideapropiaprimero.service.CanvasCalendarService;
 import ideapropiaprimero.repository.ShareRepository;
 import java.security.Principal;
 import java.util.List;
@@ -24,7 +25,7 @@ class ChatControllerTest {
     final UserRepository users = mock(UserRepository.class);
     final StudyService studies = mock(StudyService.class);
     final ShareRepository shares = mock(ShareRepository.class);
-    final ChatController controller = new ChatController(service, chats, users, studies, shares);
+    final ChatController controller = new ChatController(service, chats, users, studies, shares, mock(CanvasCalendarService.class));
     final Principal principal = () -> "student";
     @BeforeEach void account() {
         User user = mock(User.class);
@@ -62,5 +63,12 @@ class ChatControllerTest {
         assertEquals(400, controller.changeMode(7,
                 new ChatController.ModeRequest("ADMIN"), principal).getStatusCode().value());
         verifyNoInteractions(service);
+    }
+    @Test void agendaSeRespondeYGuardaSinLlamarALaIa() {
+        when(studies.scheduleReply(eq(1L),anyString())).thenReturn(Optional.of("Agenda del día: entrega de POO"));
+        when(chats.saveExchange(eq(1L),isNull(),anyString(),anyString(),anyString(),any())).thenReturn(8L);
+        var result=controller.enviarMensaje(new ChatController.MensajeRequest(null,"Dime qué pendientes tengo hoy","PRACTICE"),principal);
+        assertEquals(200,result.getStatusCode().value());assertTrue(((ChatController.MensajeResponse)result.getBody()).content().contains("entrega de POO"));
+        verifyNoInteractions(service);verify(studies,never()).context(anyLong(),any(),anyString());
     }
 }

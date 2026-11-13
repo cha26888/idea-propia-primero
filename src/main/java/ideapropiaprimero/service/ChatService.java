@@ -31,8 +31,7 @@ public class ChatService {
     public String responder(List<ChatMessage> history, TutorMode mode, String studyContext) {
         validate(history);
         if (mode == null) throw new IllegalArgumentException("Selecciona un modo de acompañamiento.");
-        var opening = TutorOpening.responseFor(mode, history.get(history.size() - 1).content());
-        if (opening.isPresent()) return opening.get();
+       
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage("system", skill.sistema(mode, history, studyContext)));
         int memoryLength = studyContext == null ? 0 : Math.min(5200, studyContext.length());

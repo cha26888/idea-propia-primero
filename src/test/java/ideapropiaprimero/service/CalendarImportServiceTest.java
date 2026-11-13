@@ -36,4 +36,42 @@ class CalendarImportServiceTest {
         assertThrows(IllegalArgumentException.class,()->CalendarImportService.parse("BEGIN:VCALENDAR\nBEGIN:VEVENT\nEND:VCALENDAR"));
         assertThrows(IllegalArgumentException.class,()->CalendarImportService.parse("x".repeat(400001)));
     }
+    @Test void canvasDistingueEntregasDeClasesPorMetadatosYConservaLaHoraLocal() {
+        var result=CalendarImportService.parse("""
+            BEGIN:VCALENDAR
+            BEGIN:VEVENT
+            UID:event-assignment-123
+            SUMMARY:Entrega POO
+            DTSTART:20261113T055900Z
+            END:VEVENT
+            BEGIN:VEVENT
+            UID:event-calendar-event-99
+            SUMMARY:Clase de inglés
+            DTSTART;TZID=America/Guatemala:20261112T090000
+            END:VEVENT
+            BEGIN:VEVENT
+            UID:another
+            SUMMARY:Entrega por URL
+            URL:https://uvg.instructure.com/courses/10/assignments/42
+            DTSTART;VALUE=DATE:20261112
+            END:VEVENT
+            BEGIN:VEVENT
+            UID:query
+            SUMMARY:Otra entrega
+            URL:https://uvg.instructure.com/calendar?include_contexts=course_10&event_id=assignment_77
+            DTSTART;VALUE=DATE:20261112
+            END:VEVENT
+            BEGIN:VEVENT
+            UID:cancelled
+            SUMMARY:Cancelado
+            STATUS:CANCELLED
+            DTSTART;VALUE=DATE:20261112
+            END:VEVENT
+            END:VCALENDAR
+            """);
+        assertEquals(4,result.events().size());
+        assertEquals("TASK",result.events().get(0).kind());assertEquals("2026-11-12",result.events().get(0).day());assertEquals("23:59",result.events().get(0).time());
+        assertEquals("EVENT",result.events().get(1).kind());assertEquals("09:00",result.events().get(1).time());
+        assertEquals("TASK",result.events().get(2).kind());assertEquals("",result.events().get(2).time());assertEquals("TASK",result.events().get(3).kind());
+    }
 }

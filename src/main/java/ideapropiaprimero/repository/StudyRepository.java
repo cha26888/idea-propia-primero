@@ -10,11 +10,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class StudyRepository {
     public record Note(long id, String kind, String content, Long sourceChatId, String updatedAt) { }
-    public record Task(long id, String title, String course, String dueDate, boolean done, String sourceUid) { }
+    public record Task(long id, String title, String course, String dueDate, boolean done, String sourceUid,
+                       String kind, String dueTime, String sourceUrl) {
+        public Task(long id,String title,String course,String dueDate,boolean done,String sourceUid) {
+            this(id,title,course,dueDate,done,sourceUid,"TASK","","");
+        }
+    }
+    /** URL privada: nunca serializar esta entidad en las respuestas HTTP ni enviarla al modelo. */
+    public record CalendarFeed(String url,String course,String syncedAt,String attemptedAt,String error,int skipped) { }
     public record Journal(long id, String day, String learned, String difficult, String nextStep) { }
     public record Guide(long id, String title, String content, Long sourceChatId, String createdAt) { }
     public record DailyAttempt(String day, String exerciseId, int choice, String reason, boolean correct, String feedback) { }
-    public record CalendarTask(String uid, String title, String day) { }
+    public record CalendarTask(String uid,String title,String day,String kind,String time,String link) {
+        public CalendarTask(String uid,String title,String day){this(uid,title,day,"EVENT","","");}
+    }
     private final String url;
 
     public StudyRepository(@Value("${app.database.path:data/idea-propia-primero.db}") String path) {
@@ -63,6 +72,22 @@ public class StudyRepository {
                         feedback TEXT NOT NULL, PRIMARY KEY(user_id,day), FOREIGN KEY(user_id) REFERENCES users(id)
                     )
                     """);
+                // Migración aditiva. Los .ics antiguos no conservaban el tipo; requieren revisión/reimportación.
+                boolean migrated=column(c,"study_tasks","kind","TEXT NOT NULL DEFAULT 'TASK'");
+                column(c,"study_tasks","due_time","TEXT NOT NULL DEFAULT ''");
+                column(c,"study_tasks","source_url","TEXT NOT NULL DEFAULT ''");
+                column(c,"study_tasks","kind_override","TEXT");
+                column(c,"study_tasks","feed_managed","INTEGER NOT NULL DEFAULT 0");
+                column(c,"study_tasks","active","INTEGER NOT NULL DEFAULT 1");
+                if(migrated)s.executeUpdate("UPDATE study_tasks SET kind='REVIEW' WHERE source_uid IS NOT NULL");
+                s.executeUpdate("""
+                    CREATE TABLE IF NOT EXISTS study_calendar_feeds (
+                        user_id INTEGER PRIMARY KEY, url TEXT NOT NULL, course TEXT NOT NULL,
+                        synced_at TEXT NOT NULL DEFAULT '', attempted_at TEXT NOT NULL DEFAULT '',
+                        error TEXT NOT NULL DEFAULT '', skipped INTEGER NOT NULL DEFAULT 0,
+                        FOREIGN KEY(user_id) REFERENCES users(id)
+                    )
+                    """);
                 s.executeUpdate("CREATE INDEX IF NOT EXISTS idx_notes_owner ON study_notes(user_id,kind,id)");
                 s.executeUpdate("CREATE INDEX IF NOT EXISTS idx_tasks_owner_date ON study_tasks(user_id,done,due_date)");
                 s.executeUpdate("CREATE INDEX IF NOT EXISTS idx_guides_owner ON study_guides(user_id,id)");
@@ -70,6 +95,13 @@ public class StudyRepository {
         } catch (Exception e) { throw new IllegalStateException("No se pudo iniciar el espacio de estudio.", e); }
     }
 
+    private static boolean column(Connection c,String table,String name,String definition) throws SQLException {
+        try(var s=c.createStatement();var r=s.executeQuery("PRAGMA table_info("+table+")")) {
+            while(r.next())if(name.equals(r.getString("name")))return false;
+        }
+        try(var s=c.createStatement()){s.executeUpdate("ALTER TABLE "+table+" ADD COLUMN "+name+" "+definition);}
+        return true;
+    }
     private Connection connect() throws SQLException {
         var c = DriverManager.getConnection(url);
         try (var s = c.createStatement()) {
@@ -115,8 +147,8 @@ public class StudyRepository {
     public boolean deleteNote(long user, long id) { return update("DELETE FROM study_notes WHERE id=? AND user_id=?",id,user)==1; }
 
     public List<Task> tasks(long user) {
-        return select("SELECT * FROM study_tasks WHERE user_id=? ORDER BY done,due_date,id LIMIT 500",
-                r -> new Task(r.getLong("id"),r.getString("title"),r.getString("course"),r.getString("due_date"),r.getBoolean("done"),r.getString("source_uid")),user);
+        return select("SELECT * FROM study_tasks WHERE user_id=? AND active=1 ORDER BY due_date,due_time,id",
+                r -> new Task(r.getLong("id"),r.getString("title"),r.getString("course"),r.getString("due_date"),r.getBoolean("done"),r.getString("source_uid"),r.getString("kind_override")==null?r.getString("kind"):r.getString("kind_override"),r.getString("due_time"),r.getString("source_url")),user);
     }
     public void addTask(long user, String title, String course, String day) {
         update("INSERT INTO study_tasks(user_id,title,course,due_date) VALUES(?,?,?,?)",user,title,course,day);
@@ -125,17 +157,55 @@ public class StudyRepository {
         return update("UPDATE study_tasks SET done=? WHERE id=? AND user_id=?",done?1:0,id,user)==1;
     }
     public boolean deleteTask(long user,long id) { return update("DELETE FROM study_tasks WHERE id=? AND user_id=?",id,user)==1; }
+    public boolean classifyTask(long user,long id,String kind) {
+        if(!Set.of("TASK","EVENT").contains(kind))throw new IllegalArgumentException("Elige tarea o evento.");
+        return update("UPDATE study_tasks SET kind_override=? WHERE user_id=? AND id=?",kind,user,id)==1;
+    }
     public int importTasks(long user,String course,List<CalendarTask> events) {
-        try (var c=connect()) {
+        try(var c=connect()) {
             c.setAutoCommit(false);
-            try (var s=c.prepareStatement("""
-                    INSERT INTO study_tasks(user_id,title,course,due_date,source_uid) VALUES(?,?,?,?,?)
-                    ON CONFLICT(user_id,source_uid) DO UPDATE SET title=excluded.title,course=excluded.course,due_date=excluded.due_date
-                    """)) {
-                for (var event:events) { bind(s,user,event.title(),course,event.day(),event.uid()); s.executeUpdate(); }
-                c.commit(); return events.size();
-            } catch (SQLException | RuntimeException e) { c.rollback(); throw e; }
-        } catch (SQLException e) { throw new IllegalStateException("No se pudo importar el calendario.",e); }
+            try {upsertCalendar(c,user,course,events,false);c.commit();return events.size();}
+            catch(SQLException|RuntimeException e){c.rollback();throw e;}
+        } catch(SQLException e){throw new IllegalStateException("No se pudo importar el calendario.",e);}
+    }
+    private static void upsertCalendar(Connection c,long user,String course,List<CalendarTask> events,boolean managed) throws SQLException {
+        try(var s=c.prepareStatement("""
+            INSERT INTO study_tasks(user_id,title,course,due_date,source_uid,kind,due_time,source_url,feed_managed,active)
+            VALUES(?,?,?,?,?,?,?,?,?,1)
+            ON CONFLICT(user_id,source_uid) DO UPDATE SET title=excluded.title,course=excluded.course,
+            due_date=excluded.due_date,kind=excluded.kind,due_time=excluded.due_time,source_url=excluded.source_url,
+            feed_managed=MAX(study_tasks.feed_managed,excluded.feed_managed),active=1
+            """)) {
+            for(var e:events){bind(s,user,e.title(),course,e.day(),e.uid(),e.kind(),e.time(),e.link(),managed?1:0);s.executeUpdate();}
+        }
+    }
+    public Optional<CalendarFeed> calendarFeed(long user) {
+        return select("SELECT * FROM study_calendar_feeds WHERE user_id=?",r->new CalendarFeed(r.getString("url"),r.getString("course"),r.getString("synced_at"),r.getString("attempted_at"),r.getString("error"),r.getInt("skipped")),user).stream().findFirst();
+    }
+    /** Reconciliación atómica: nunca deja un feed a medias; conserva marcas manuales por UID. */
+    public void syncCalendar(long user,String feedUrl,String course,List<CalendarTask> events,int skipped,String now,boolean replace) {
+        try(var c=connect()) {
+            c.setAutoCommit(false);
+            try {
+                try(var s=c.prepareStatement(replace
+                    ?"UPDATE study_tasks SET active=0 WHERE user_id=? AND source_uid IS NOT NULL"
+                    :"UPDATE study_tasks SET active=0 WHERE user_id=? AND feed_managed=1")){bind(s,user);s.executeUpdate();}
+                upsertCalendar(c,user,course,events,true);
+                try(var s=c.prepareStatement("""
+                    INSERT INTO study_calendar_feeds(user_id,url,course,synced_at,attempted_at,error,skipped) VALUES(?,?,?,?,?,'',?)
+                    ON CONFLICT(user_id) DO UPDATE SET url=excluded.url,course=excluded.course,synced_at=excluded.synced_at,
+                    attempted_at=excluded.attempted_at,error='',skipped=excluded.skipped
+                    """)){bind(s,user,feedUrl,course,now,now,skipped);s.executeUpdate();}
+                c.commit();
+            }catch(SQLException|RuntimeException e){c.rollback();throw e;}
+        }catch(SQLException e){throw new IllegalStateException("No se pudo guardar la actualización del calendario.",e);}
+    }
+    public void calendarFailure(long user,String now,String message) {
+        update("UPDATE study_calendar_feeds SET attempted_at=?,error=? WHERE user_id=?",now,message,user);
+    }
+    public void disconnectCalendar(long user) {
+        // Se conserva una copia local de las fechas; la UI informa de que ya no se actualiza.
+        update("DELETE FROM study_calendar_feeds WHERE user_id=?",user);
     }
 
     public List<Journal> journal(long user) {

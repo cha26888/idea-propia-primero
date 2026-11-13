@@ -59,7 +59,12 @@ public class StudyService {
                 .forEach(n->data.append("Preferencia declarada: ").append(quoted(n.content(),300)).append('\n'));
         notes.stream().filter(n->n.kind().equals("PROJECT")&&tokens.stream().anyMatch(w->n.content().toLowerCase(Locale.ROOT).contains(w))).limit(3)
                 .forEach(n->data.append("Recuerdo guardado: ").append(quoted(n.content(),500)).append('\n'));
-        store.tasks(user).stream().filter(t->!t.done()).limit(3).forEach(t->data.append("Pendiente ").append(t.dueDate()).append(": ").append(quoted(t.title()+" ("+t.course()+")",200)).append('\n'));
+        LocalDate day=today();
+        data.append("Fecha actual en America/Guatemala: ").append(day).append(". Las fechas pasadas no son pendientes de hoy.\n");
+        store.tasks(user).stream().filter(t->t.kind().equals("TASK")&&!t.done()&&t.dueDate().compareTo(day.toString())>=0
+                &&t.dueDate().compareTo(day.plusDays(6).toString())<=0).limit(5)
+                .forEach(t->data.append(t.dueDate().equals(day.toString())?"Entrega de HOY ":"Entrega FUTURA ").append(t.dueDate()).append(" ").append(t.dueTime()).append(": ").append(quoted(t.title()+" ("+t.course()+")",160)).append('\n'));
+
         if(RECALL.matcher(query).find()) {
             var matches=new LinkedHashMap<Long,ChatRepository.SearchHit>();
             var scores=new HashMap<Long,Integer>();
@@ -73,6 +78,9 @@ public class StudyService {
         }
         String result=data.length()>5200?data.substring(0,5200):data.toString();
         return new Context(result,List.copyOf(sources));
+    }
+    public Optional<String> scheduleReply(long user,String query) {
+        return StudyAgenda.reply(store.tasks(user),query,today());
     }
     public String appendSources(String answer,Context context) {
         if(context.sources().isEmpty())return answer;
