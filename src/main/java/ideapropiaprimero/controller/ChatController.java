@@ -5,9 +5,13 @@ import ideapropiaprimero.integration.ai.ChatMessage;
 import ideapropiaprimero.model.Chat;
 import ideapropiaprimero.model.StoredMessage;
 import ideapropiaprimero.model.User;
+import ideapropiaprimero.model.TutorMode;
 import ideapropiaprimero.repository.ChatRepository;
 import ideapropiaprimero.repository.UserRepository;
+import ideapropiaprimero.repository.ShareRepository;
 import ideapropiaprimero.service.ChatService;
+import ideapropiaprimero.service.ChatTitles;
+import ideapropiaprimero.service.StudyService;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -33,16 +39,19 @@ import org.springframework.web.server.ResponseStatusException;
 public class ChatController {
 
     private static final int MAX_CONTENT_LENGTH = 4000;
-    private static final int MAX_TITLE_LENGTH = 40;
 
     private final ChatService chatService;
     private final ChatRepository chats;
     private final UserRepository users;
+    private final StudyService studies;
+    private final ShareRepository shares;
 
-    public ChatController(ChatService chatService, ChatRepository chats, UserRepository users) {
+    public ChatController(ChatService chatService, ChatRepository chats, UserRepository users, StudyService studies, ShareRepository shares) {
         this.chatService = chatService;
         this.chats = chats;
         this.users = users;
+        this.studies = studies;
+        this.shares = shares;
     }
 
     @GetMapping("/chat")
@@ -54,11 +63,14 @@ public class ChatController {
     }
 
     /** chatId es null cuando el mensaje abre una conversación nueva. */
-    public record MensajeRequest(Long chatId, String content) { }
+    public record MensajeRequest(Long chatId, String content, String mode) { }
 
-    public record MensajeResponse(long chatId, String content) { }
+    public record MensajeResponse(long chatId, String content, TutorMode mode) { }
 
-    public record ChatDetail(long id, String title, List<StoredMessage> messages) { }
+    public record ChatDetail(long id, String title, TutorMode mode, List<StoredMessage> messages) { }
+
+    public record ModeRequest(String mode) { }
+    public record ModeResponse(TutorMode mode) { }
 
     public record ErrorResponse(String error) { }
 
@@ -69,13 +81,50 @@ public class ChatController {
         return chats.listChats(currentUserId(principal));
     }
 
+    @GetMapping("/chat/api/search") @ResponseBody
+    public List<ChatRepository.SearchHit> search(@RequestParam String q, Principal principal) {
+        return chats.search(currentUserId(principal), q);
+    }
+    public record TitleRequest(String title) { }
+    @PostMapping("/chat/api/chats/{id}/title") @ResponseBody
+    public ResponseEntity<?> rename(@PathVariable long id,@RequestBody TitleRequest request,Principal principal) {
+        try {
+            String title=StudyService.text(request==null?null:request.title(),80,false).replaceAll("\\s+"," ");
+            if(!chats.rename(currentUserId(principal),id,title))return notFound();
+            return ResponseEntity.ok(java.util.Map.of("title",title));
+        } catch(IllegalArgumentException e){return badRequest(e.getMessage());}
+    }
+    @PostMapping("/chat/api/chats/{id}/share") @ResponseBody
+    public ResponseEntity<?> share(@PathVariable long id,Principal principal) {
+        long user=currentUserId(principal);
+        if(chats.findChat(id,user).isEmpty())return notFound();
+        return ResponseEntity.ok(java.util.Map.of("path","/share/"+shares.create(user,id)));
+    }
+    @DeleteMapping("/chat/api/chats/{id}/share") @ResponseBody
+    public ResponseEntity<?> unshare(@PathVariable long id,Principal principal) {
+        long user=currentUserId(principal);if(chats.findChat(id,user).isEmpty())return notFound();
+        shares.revoke(user,id);return ResponseEntity.ok(java.util.Map.of("revoked",true));
+    }
+
     /** Mensajes de una conversación. 404 si no existe o no es del usuario. */
     @GetMapping("/chat/api/chats/{id}")
     @ResponseBody
     public ResponseEntity<?> openChat(@PathVariable long id, Principal principal) {
         Optional<Chat> chat = chats.findChat(id, currentUserId(principal));
         if (chat.isEmpty()) return notFound();
-        return ResponseEntity.ok(new ChatDetail(chat.get().id(), chat.get().title(), chats.messages(id)));
+        return ResponseEntity.ok(new ChatDetail(chat.get().id(), chat.get().title(), chat.get().mode(), chats.messages(id)));
+    }
+
+    @PostMapping(value = "/chat/api/chats/{id}/mode", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> changeMode(@PathVariable long id, @RequestBody ModeRequest request, Principal principal) {
+        try {
+            TutorMode mode = TutorMode.parse(request == null ? null : request.mode());
+            if (!chats.updateMode(id, currentUserId(principal), mode)) return notFound();
+            return ResponseEntity.ok(new ModeResponse(mode));
+        } catch (IllegalArgumentException e) {
+            return badRequest(e.getMessage());
+        }
     }
 
     @PostMapping(value = "/chat/api/mensajes", consumes = "application/json", produces = "application/json")
@@ -91,19 +140,28 @@ public class ChatController {
 
         long userId = currentUserId(principal);
         List<ChatMessage> contexto = new ArrayList<>();
+        TutorMode mode = TutorMode.PRACTICE;
         if (request.chatId() != null) {
-            if (chats.findChat(request.chatId(), userId).isEmpty()) return notFound();
-            for (StoredMessage m : chats.recentMessages(request.chatId(), ChatRepository.MAX_CONTEXT_MESSAGES)) {
+            Optional<Chat> existing = chats.findChat(request.chatId(), userId);
+            if (existing.isEmpty()) return notFound();
+            mode = existing.get().mode();
+            for (StoredMessage m : chats.contextMessages(request.chatId())) {
                 contexto.add(new ChatMessage(m.role(), m.content()));
             }
         }
         contexto.add(new ChatMessage("user", content));
 
         try {
-            String respuesta = chatService.responder(contexto);
+            if (request.mode() != null) mode = TutorMode.parse(request.mode());
+            var support = studies.context(userId, request.chatId(), content);
+            String respuesta = support.text().isBlank() ? chatService.responder(contexto, mode)
+                    : chatService.responder(contexto, mode, support.text());
+            if(!support.sources().isEmpty())respuesta=studies.appendSources(respuesta,support);
             // Se guarda solo si la IA respondió: un fallo no deja mensajes huérfanos ni chats vacíos.
-            long chatId = chats.saveExchange(userId, request.chatId(), titleFrom(content), content, respuesta);
-            return ResponseEntity.ok(new MensajeResponse(chatId, respuesta));
+            long chatId = chats.saveExchange(userId, request.chatId(), titleFrom(content), content, respuesta, mode);
+            try { studies.observe(userId,chatId,content); }
+            catch(RuntimeException e) { java.util.logging.Logger.getLogger(ChatController.class.getName()).warning("El chat se guardó, pero no se pudo actualizar la memoria automática."); }
+            return ResponseEntity.ok(new MensajeResponse(chatId, respuesta, mode));
         } catch (IllegalArgumentException e) {
             return badRequest(e.getMessage());
         } catch (AiException e) {
@@ -122,9 +180,7 @@ public class ChatController {
 
     /** Título de la conversación: el primer mensaje, en una línea y recortado. */
     private static String titleFrom(String content) {
-        String oneLine = content.replaceAll("\\s+", " ").strip();
-        if (oneLine.length() <= MAX_TITLE_LENGTH) return oneLine;
-        return oneLine.substring(0, MAX_TITLE_LENGTH - 1).stripTrailing() + "…";
+        return ChatTitles.from(content);
     }
 
     private static ResponseEntity<?> badRequest(String message) {

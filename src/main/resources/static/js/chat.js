@@ -20,6 +20,19 @@
   const menuButton = document.querySelector('[data-sidebar-toggle]');
   const overlay = document.querySelector('[data-sidebar-overlay]');
   const newChatButton = document.querySelector('[data-new-chat]');
+  const searchInput = document.querySelector('[data-chat-search]');
+  const chatTitle = root.querySelector('[data-chat-title]');
+  const toolStatus = root.querySelector('[data-chat-tool-status]');
+  const toolButtons = root.querySelectorAll('[data-chat-action]');
+  const modeSelect = root.querySelector('[data-tutor-mode]');
+  const modeHelp = root.querySelector('[data-tutor-mode-help]');
+  const modeStatus = root.querySelector('[data-tutor-mode-status]');
+  const modeLabels = { UNDERSTAND: 'Comprender', PRACTICE: 'Practicar', CHALLENGE: 'Estricto' };
+  const modeDescriptions = {
+    UNDERSTAND: 'Aprende con explicaciones y ejemplos distintos resueltos; tú aplicas la idea a tu ejercicio.',
+    PRACTICE: 'Tu idea primero: propón un paso y avanza con pistas y revisión. Tu ejercicio lo resuelves tú.',
+    CHALLENGE: 'Estricto: plantea tu estrategia antes de recibir pistas. Puedes pedir definiciones; la IA no resuelve tu ejercicio.',
+  };
 
   const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
   const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
@@ -27,6 +40,18 @@
   let currentChatId = null; // null = conversación nueva, todavía sin guardar
   let viewVersion = 0;      // cambia al abrir otro chat; evita pintar respuestas en la vista equivocada
   let sending = false;
+  let changingMode = false;
+  let chatReady = true;
+  let selectedMode = 'PRACTICE';
+  let historyVersion = 0;
+  let usingTool = false;
+
+  function setMode(mode) {
+    selectedMode = Object.hasOwn(modeDescriptions, mode) ? mode : 'PRACTICE';
+    modeSelect.value = selectedMode;
+    modeHelp.textContent = modeDescriptions[selectedMode];
+    modeStatus.textContent = '';
+  }
 
   /* ---------------- Sidebar móvil ---------------- */
   const closeSidebar = () => document.body.classList.remove('sidebar-open');
@@ -37,7 +62,9 @@
   const resizeTextarea = () => {
     textarea.style.height = 'auto';
     textarea.style.height = `${Math.min(textarea.scrollHeight, 192)}px`;
-    sendButton.disabled = sending || textarea.value.trim().length === 0;
+    sendButton.disabled = sending || changingMode || usingTool || !chatReady || textarea.value.trim().length === 0;
+    modeSelect.disabled = sending || changingMode || usingTool || !chatReady;
+    toolButtons.forEach(button => { button.disabled = currentChatId === null || !chatReady || sending || changingMode || usingTool; });
   };
   textarea?.addEventListener('input', resizeTextarea);
   textarea?.addEventListener('keydown', event => {
@@ -78,19 +105,24 @@
     root.querySelector('[data-chat-scroll]').scrollTop = 1e9;
   };
 
-  function appendMessage(role, content, { error = false } = {}) {
+  function appendMessage(role, content, { error = false, mode = null } = {}) {
     intro?.setAttribute('hidden', '');
     const wrapper = document.createElement('div');
     wrapper.className = `msg msg--${role === 'user' ? 'user' : 'agent'}${error ? ' msg--error' : ''}`;
 
     const meta = document.createElement('p');
     meta.className = 'msg__meta';
-    meta.textContent = role === 'user' ? 'Tú' : 'Agente';
+    const agentLabel = !error && Object.hasOwn(modeLabels, mode) ? `Agente · ${modeLabels[mode]}` : 'Agente';
+    meta.textContent = role === 'user' ? 'Tú' : agentLabel;
     wrapper.appendChild(meta);
 
     const bubble = document.createElement('div');
     bubble.className = 'msg__bubble';
-    bubble.textContent = content;
+    if (role === 'assistant' && !error && window.ChatFormatting) {
+      window.ChatFormatting.render(bubble, content);
+    } else {
+      bubble.textContent = content;
+    }
     wrapper.appendChild(bubble);
 
     log.appendChild(wrapper);
@@ -155,7 +187,7 @@
 
       const meta = document.createElement('span');
       meta.className = 'sidebar__link-meta';
-      meta.textContent = formatWhen(chat.updatedAt);
+      meta.textContent = chat.snippet ? chat.snippet.slice(0,110) : formatWhen(chat.updatedAt);
 
       button.append(title, meta);
       item.appendChild(button);
@@ -165,19 +197,30 @@
   }
 
   async function loadHistory() {
+    const version = ++historyVersion;
+    const query = searchInput.value.trim();
     try {
-      renderHistory((await api('/chat/api/chats')) || []);
+      const chats = (await api(query ? `/chat/api/search?q=${encodeURIComponent(query)}` : '/chat/api/chats')) || [];
+      if (version !== historyVersion) return;
+      renderHistory(chats);
+      const active=chats.find(chat=>chat.id===currentChatId);
+      if(active)chatTitle.textContent=active.title;
     } catch (err) {
-      renderHistoryMessage('No se pudo cargar el historial.');
+      if(version===historyVersion)renderHistoryMessage('No se pudo cargar el historial.');
     }
   }
 
   async function openChat(id) {
     closeSidebar();
-    if (id === currentChatId) return;
+    if (id === currentChatId && chatReady) return;
 
     const version = ++viewVersion;
     currentChatId = id;
+    chatTitle.textContent = 'Cargando conversación…';
+    toolStatus.textContent = '';
+    chatReady = false;
+    setMode('PRACTICE');
+    resizeTextarea();
     setActive();
     log.replaceChildren();
     showTyping();
@@ -185,6 +228,10 @@
     try {
       const chat = await api(`/chat/api/chats/${id}`);
       if (version !== viewVersion) return;
+      setMode(chat.mode);
+      chatTitle.textContent = chat.title;
+      history.replaceState(null,'',`/chat?chat=${id}`);
+      chatReady = true;
       log.replaceChildren();
       for (const message of chat.messages) appendMessage(message.role, message.content);
       scrollToBottom();
@@ -192,12 +239,20 @@
       if (version !== viewVersion) return;
       log.replaceChildren();
       appendMessage('assistant', err.message || 'No se pudo abrir la conversación.', { error: true });
+    } finally {
+      if (version === viewVersion) resizeTextarea();
     }
   }
 
   function newChat() {
     viewVersion++;
     currentChatId = null;
+    chatTitle.textContent = 'Nueva conversación';
+    toolStatus.textContent = '';
+    history.replaceState(null,'','/chat');
+    chatReady = true;
+    setMode('PRACTICE');
+    resizeTextarea();
     log.replaceChildren();
     intro?.removeAttribute('hidden');
     setActive();
@@ -210,16 +265,70 @@
     if (button) openChat(Number(button.dataset.chatId));
   });
   newChatButton?.addEventListener('click', newChat);
+  let searchTimer;
+  searchInput.addEventListener('input',()=>{clearTimeout(searchTimer);historyVersion++;searchTimer=setTimeout(loadHistory,250);});
+
+  toolButtons.forEach(button=>button.addEventListener('click',async()=>{
+    if(currentChatId===null||usingTool)return;
+    const id=currentChatId, version=viewVersion, action=button.dataset.chatAction;
+    if(action==='guide'){location.assign(`/study?chat=${id}#guides`);return;}
+    let value;
+    if(action==='rename'){value=prompt('Título del chat (máximo 80 caracteres):',chatTitle.textContent);if(value===null||!value.trim())return;}
+    if(action==='remember'){value=prompt('¿Qué información de este proyecto quieres recordar? Máximo 800 caracteres.');if(value===null||!value.trim())return;}
+    if(action==='share'&&!confirm('Se creará una copia pública de TODOS los mensajes actuales de este chat. Cualquier persona con el enlace podrá leerla durante 30 días. No incluirá mensajes futuros. Si ya había un enlace, quedará desactivado. ¿Crear el enlace?'))return;
+    if(action==='unshare'&&!confirm('¿Desactivar el enlace compartido de este chat?'))return;
+    usingTool=true;resizeTextarea();toolStatus.textContent='Procesando…';
+    try {
+      if(action==='rename'){const result=await api(`/chat/api/chats/${id}/title`,{method:'POST',body:JSON.stringify({title:value})});if(version===viewVersion)chatTitle.textContent=result.title;await loadHistory();}
+      if(action==='remember')await api('/study/api/notes',{method:'POST',body:JSON.stringify({kind:'PROJECT',content:value,sourceChatId:id})});
+      if(action==='unshare')await api(`/chat/api/chats/${id}/share`,{method:'DELETE'});
+      if(action==='share'){
+        const result=await api(`/chat/api/chats/${id}/share`,{method:'POST'});
+        if(version===viewVersion){const input=document.createElement('input');input.type='text';input.readOnly=true;input.value=new URL(result.path,location.origin).href;input.setAttribute('aria-label','Enlace para compartir');input.style.width='100%';toolStatus.replaceChildren(document.createTextNode('Enlace creado. Cópialo: '),input);input.select();}
+      } else if(version===viewVersion)toolStatus.textContent=action==='unshare'?'Enlace desactivado.':action==='remember'?'Recuerdo guardado. Puedes editarlo en Perfil y recuerdos.':'Título guardado.';
+    } catch(error){if(version===viewVersion)toolStatus.textContent=error.message||'No se pudo completar la operación.';}
+    finally{usingTool=false;resizeTextarea();}
+  }));
+
+  modeSelect.addEventListener('change', async () => {
+    const previousMode = selectedMode;
+    const nextMode = modeSelect.value;
+    const version = viewVersion;
+    const id = currentChatId;
+    setMode(nextMode);
+    if (id === null) return; // se guarda junto al primer intercambio exitoso
+    changingMode = true;
+    resizeTextarea();
+    modeStatus.textContent = 'Guardando modo…';
+    try {
+      const body = await api(`/chat/api/chats/${id}/mode`, {
+        method: 'POST', body: JSON.stringify({ mode: nextMode }),
+      });
+      if (version === viewVersion) {
+        setMode(body.mode);
+        modeStatus.textContent = 'Modo guardado.';
+      }
+    } catch (err) {
+      if (version === viewVersion) {
+        setMode(previousMode);
+        modeStatus.textContent = err.message || 'No se pudo guardar el modo.';
+      }
+    } finally {
+      changingMode = false;
+      resizeTextarea();
+    }
+  });
 
   /* ---------------- Envío ---------------- */
   form?.addEventListener('submit', async event => {
     event.preventDefault();
     const text = textarea.value.trim();
-    if (!text || sending) return;
+    if (!text || sending || changingMode || usingTool || !chatReady) return;
 
     log.querySelectorAll('.msg--error').forEach(node => node.remove());
     const version = viewVersion;
     const chatIdAtSend = currentChatId;
+    const modeAtSend = selectedMode;
 
     sending = true;
     textarea.disabled = true;
@@ -231,14 +340,17 @@
     try {
       const body = await api('/chat/api/mensajes', {
         method: 'POST',
-        body: JSON.stringify({ chatId: chatIdAtSend, content: text }),
+        body: JSON.stringify({ chatId: chatIdAtSend, content: text, mode: modeAtSend }),
       });
       if (!body?.content) throw new Error('La IA no devolvió contenido.');
 
       if (version === viewVersion) {
         typing.remove();
-        appendMessage('assistant', body.content);
-        if (currentChatId === null) currentChatId = body.chatId;
+        // Usa el modo confirmado por el servidor para esta respuesta concreta.
+        appendMessage('assistant', body.content, { mode: body.mode });
+        if (currentChatId === null) { currentChatId = body.chatId; chatTitle.textContent = text.slice(0,64); }
+        history.replaceState(null,'',`/chat?chat=${body.chatId}`);
+        setMode(body.mode);
       }
       await loadHistory();
     } catch (err) {
@@ -256,6 +368,7 @@
     }
   });
 
-  loadHistory();
+  setMode('PRACTICE');
+  (async()=>{await loadHistory();const value=new URLSearchParams(location.search).get('chat');if(value&&/^\d+$/.test(value)&&Number.isSafeInteger(Number(value))&&viewVersion===0)await openChat(Number(value));})();
   resizeTextarea();
 })();

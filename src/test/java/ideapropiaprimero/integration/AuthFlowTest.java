@@ -35,6 +35,8 @@ class AuthFlowTest {
     @Autowired UserRepository users;
     @Autowired PasswordEncoder encoder;
     @Autowired RegistrationService registration;
+    @Autowired ideapropiaprimero.repository.ChatRepository chats;
+    @Autowired ideapropiaprimero.repository.ShareRepository shares;
 
     @Test void registerLoginByBothIdentifiersAndLogout() throws Exception {
         mvc.perform(post("/register").with(csrf()).param("username","Luna")
@@ -109,5 +111,31 @@ class AuthFlowTest {
             .andExpect(status().isForbidden());
         mvc.perform(get("/register")).andExpect(status().isOk())
             .andExpect(content().string(org.hamcrest.Matchers.containsString("data-submit-url=\"/register/submit\"")));
+    }
+
+    @Test void studyIsPrivateAndMutationsRequireCsrf() throws Exception {
+        mvc.perform(get("/study")).andExpect(status().is3xxRedirection());
+        mvc.perform(get("/study/api/dashboard")).andExpect(status().is3xxRedirection());
+        mvc.perform(post("/study/api/tasks").with(user("StudentStudy"))
+                .contentType("application/json").content("{\"title\":\"Examen\",\"dueDate\":\"2026-11-13\"}"))
+            .andExpect(status().isForbidden());
+        mvc.perform(get("/share/nonexistent")).andExpect(status().isNotFound());
+    }
+
+    @Test void publicShareIsASnapshotAndOnlyOwnerCanManageIt() throws Exception {
+        users.insert("ShareOwner","shareowner@example.com",encoder.encode("abcd"),Role.STUDENT);
+        users.insert("ShareOther","shareother@example.com",encoder.encode("abcd"),Role.STUDENT);
+        long owner=users.findByLogin("ShareOwner").orElseThrow().getId();
+        long chat=chats.saveExchange(owner,null,"Ejemplo compartido","Pregunta publicada","Respuesta publicada");
+        String token=shares.create(owner,chat);
+        chats.saveExchange(owner,chat,"Ejemplo compartido","Mensaje posterior privado","Respuesta posterior privada");
+        mvc.perform(get("/share/"+token)).andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Pregunta publicada")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Mensaje posterior privado"))));
+        mvc.perform(post("/chat/api/chats/"+chat+"/share").with(user("ShareOther")).with(csrf()))
+            .andExpect(status().isNotFound());
+        mvc.perform(delete("/chat/api/chats/"+chat+"/share").with(user("ShareOwner")).with(csrf()))
+            .andExpect(status().isOk());
+        mvc.perform(get("/share/"+token)).andExpect(status().isNotFound());
     }
 }

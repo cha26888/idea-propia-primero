@@ -1,17 +1,17 @@
 package ideapropiaprimero.service;
 
 import ideapropiaprimero.integration.ai.AiClient;
+import ideapropiaprimero.integration.ai.AiException;
 import ideapropiaprimero.integration.ai.ChatMessage;
-import org.springframework.stereotype.Service;
-
+import ideapropiaprimero.model.TutorMode;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ChatService {
-
-    private static final int MAX_RESPUESTA_PREVIA = 600;
-
+    /** Presupuesto de caracteres, no una medición de tokens del proveedor. */
+    static final int MAX_CONTEXT_CHARACTERS = 32_000;
     private final AiClient ai;
     private final TutorSkill skill;
 
@@ -20,68 +20,69 @@ public class ChatService {
         this.skill = skill;
     }
 
-    public String responder(List<ChatMessage> historial) {
-
-        if (historial == null || historial.isEmpty()
-                || historial.size() > 21
-                || historial.size() % 2 == 0) {
-
-            throw new IllegalArgumentException(
-                    "Envía hasta 10 pares de mensajes previos y una pregunta nueva."
-            );
-        }
-
-        for (int i = 0; i < historial.size(); i++) {
-            ChatMessage message = historial.get(i);
-
-            String expectedRole = i % 2 == 0 ? "user" : "assistant";
-            int limit = expectedRole.equals("user") ? 4000 : 20000;
-
-            if (message == null
-                    || !expectedRole.equals(message.role())
-                    || message.content() == null
-                    || message.content().isBlank()
-                    || message.content().length() > limit) {
-
-                throw new IllegalArgumentException(
-                        "Mensajes inválidos: alterna user y assistant, terminando en user. "
-                        + "Máximo 4000 caracteres por pregunta y 20000 por respuesta previa."
-                );
-            }
-        }
-
-        ChatMessage ultimo = historial.get(historial.size() - 1);
-        boolean confusion = skill.esConfusion(ultimo.content());
-
-        String respuesta = ai.responder(armar(historial, confusion, false));
-        if (confusion && skill.muestraCalculo(respuesta)) {
-            respuesta = ai.responder(armar(historial, true, true));
-            if (skill.muestraCalculo(respuesta)) {
-                return skill.respuestaConfusion();
-            }
-        }
-        return respuesta;
+    public String responder(List<ChatMessage> history) {
+        return responder(history, TutorMode.PRACTICE);
     }
 
-    private List<ChatMessage> armar(List<ChatMessage> historial, boolean confusion, boolean estricto) {
+    public String responder(List<ChatMessage> history, TutorMode mode) {
+        return responder(history, mode, "");
+    }
+
+    public String responder(List<ChatMessage> history, TutorMode mode, String studyContext) {
+        validate(history);
+        if (mode == null) throw new IllegalArgumentException("Selecciona un modo de acompañamiento.");
+        var opening = TutorOpening.responseFor(mode, history.get(history.size() - 1).content());
+        if (opening.isPresent()) return opening.get();
         List<ChatMessage> messages = new ArrayList<>();
-        messages.add(new ChatMessage("system", skill.sistema()));
-
-        for (int i = 0; i < historial.size() - 1; i++) {
-            ChatMessage previo = historial.get(i);
-            messages.add(previo.role().equals("assistant")
-                    ? new ChatMessage("assistant", recortar(previo.content()))
-                    : previo);
+        messages.add(new ChatMessage("system", skill.sistema(mode, history, studyContext)));
+        int memoryLength = studyContext == null ? 0 : Math.min(5200, studyContext.length());
+        messages.addAll(selectContext(history, MAX_CONTEXT_CHARACTERS - memoryLength));
+        // Una generación: los ejemplos no se penalizan por contener cálculos.
+        String response = ai.responder(List.copyOf(messages));
+        if (response == null || response.isBlank() || response.length() > 20_000) {
+            throw new AiException(502, "La IA no devolvió una respuesta de texto utilizable.");
         }
-
-        ChatMessage ultimo = historial.get(historial.size() - 1);
-        String recordatorio = skill.recordatorio(confusion) + (estricto ? "\n" + skill.recordatorioEstricto() : "");
-        messages.add(new ChatMessage("user", ultimo.content() + "\n\n" + recordatorio));
-        return messages;
+        return response;
     }
 
-    private static String recortar(String texto) {
-        if (texto.length() <= MAX_RESPUESTA_PREVIA) return texto;
-        return texto.substring(0, MAX_RESPUESTA_PREVIA).stripTrailing() + "…";
+    /** Pares completos recientes y, si cabe, el inicial; nunca corta código. */
+    List<ChatMessage> selectContext(List<ChatMessage> history) {
+        return selectContext(history, MAX_CONTEXT_CHARACTERS);
+    }
+
+    private List<ChatMessage> selectContext(List<ChatMessage> history, int maxCharacters) {
+        int last = history.size() - 1;
+        int budget = maxCharacters - history.get(last).content().length();
+        int start = last;
+        while (start >= 2) {
+            int length = history.get(start - 2).content().length()
+                    + history.get(start - 1).content().length();
+            if (length > budget) break;
+            budget -= length;
+            start -= 2;
+        }
+        List<ChatMessage> selected = new ArrayList<>();
+        if (start > 0 && history.get(0).content().length() + history.get(1).content().length() <= budget) {
+            selected.add(history.get(0));
+            selected.add(history.get(1));
+        }
+        selected.addAll(history.subList(start, history.size()));
+        return List.copyOf(selected);
+    }
+
+    private static void validate(List<ChatMessage> history) {
+        if (history == null || history.isEmpty() || history.size() > 21 || history.size() % 2 == 0) {
+            throw new IllegalArgumentException("Envía hasta 10 pares de mensajes previos y una pregunta nueva.");
+        }
+        for (int i = 0; i < history.size(); i++) {
+            ChatMessage message = history.get(i);
+            String role = i % 2 == 0 ? "user" : "assistant";
+            int limit = role.equals("user") ? 4000 : 20_000;
+            if (message == null || !role.equals(message.role()) || message.content() == null
+                    || message.content().isBlank() || message.content().length() > limit) {
+                throw new IllegalArgumentException("Mensajes inválidos: alterna user y assistant, terminando en user. "
+                        + "Máximo 4000 caracteres por pregunta y 20000 por respuesta previa.");
+            }
+        }
     }
 }

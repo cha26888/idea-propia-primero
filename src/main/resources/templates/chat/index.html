@@ -9,7 +9,16 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}">
 <link rel="stylesheet" th:href="@{/css/theme.css}">
 <link rel="stylesheet" th:href="@{/css/components.css}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.css"
+      integrity="sha384-WwGtaC6ywCHxA5cstpj/3+xIZvTez8dq2IcBQaXRkenHZ7FVVq1ZROtURwfbtTlG" crossorigin="anonymous">
 <link rel="stylesheet" th:href="@{/css/chat.css}">
+<link rel="stylesheet" th:href="@{/css/study.css}">
+<!-- Versiones fijas; si el CDN falla, el chat conserva el texto original. -->
+<script defer src="https://cdn.jsdelivr.net/npm/marked@17.0.5/lib/marked.umd.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.4.17/dist/purify.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js"
+        integrity="sha384-a1WQdjRj162i159OYq041X6I4K8NenkrI09LlPmiHg0YOb7CR+wJOraXwK9abpnE" crossorigin="anonymous"></script>
+<script defer th:src="@{/js/chat-format.js}"></script>
 <script defer th:src="@{/js/chat.js}"></script>
 </head>
 <body class="chat-body">
@@ -34,36 +43,56 @@
       <button class="button button--primary sidebar__new" type="button" data-new-chat>+ Nuevo chat</button>
     </div>
     <p class="sidebar__label">TUS CHATS</p>
+    <div class="sidebar__section"><input class="study-search" type="search" data-chat-search maxlength="120" placeholder="Buscar título o contenido…" aria-label="Buscar en mis chats"></div>
     <ul class="sidebar__list" data-chat-history>
       <li class="sidebar__empty">Cargando conversaciones…</li>
     </ul>
     <div class="sidebar__footer">
 
-      <div class="sidebar__future">
-          <span>Diario</span>
-          <span class="sidebar__soon">Próximamente</span>
-      </div>
 
-      <div class="sidebar__future">
-          <span>Tareas</span>
-          <span class="sidebar__soon">Próximamente</span>
-      </div>
+
+      <a href="/study#daily">Práctica diaria</a>
+      <a href="/study#tasks">Pendientes y calendario</a>
+      <a href="/study#guides">Guías de estudio</a>
+      <a href="/study#journal">Diario</a>
+      <a href="/study#memory">Perfil y recuerdos</a>
 
       <a th:href="@{/welcome}">← Volver a mi cuenta</a>
     </div>
   </aside>
 
   <section class="chat-panel" data-chat-root aria-label="Conversación con el agente">
+    <div class="chat-tools"><strong data-chat-title>Nueva conversación</strong>
+      <button class="study-small-button" type="button" data-chat-action="rename" disabled>Renombrar</button>
+      <button class="study-small-button" type="button" data-chat-action="remember" disabled>Guardar recuerdo</button>
+      <button class="study-small-button" type="button" data-chat-action="guide" disabled>Crear guía</button>
+      <button class="study-small-button" type="button" data-chat-action="share" disabled>Compartir</button>
+      <button class="study-small-button" type="button" data-chat-action="unshare" disabled>Desactivar enlace</button>
+    </div><p class="chat-tool-status" data-chat-tool-status role="status"></p>
     <div class="chat-scroll" data-chat-scroll>
       <div class="chat-intro" data-chat-intro>
-        <h1>Cuéntame en qué estás trabajando.</h1>
-        <p>Antes de darte la respuesta, te voy a pedir que me muestres cómo lo intentaste tú primero. Así el razonamiento sigue siendo tuyo.</p>
+        <h1>Tu idea primero.</h1>
+        <p>Cuéntame qué intentaste o qué necesitas comprender. Aprende con explicaciones, ejemplos distintos y pistas para construir tu propia solución.</p>
       </div>
       <div class="chat-log" data-chat-log role="log" aria-live="polite"></div>
     </div>
 
     <div class="composer">
+
       <p class="composer__hint" data-composer-hint>Enter envía tu mensaje mientras que Shift + Enter agrega una línea nueva</p>
+
+      <div class="tutor-mode">
+        <label for="tutor-mode">Acompañamiento</label>
+        <select id="tutor-mode" data-tutor-mode aria-describedby="tutor-mode-help">
+          <option value="UNDERSTAND">Comprender</option>
+          <option value="PRACTICE" selected>Practicar</option>
+          <option value="CHALLENGE">Estricto</option>
+        </select>
+        <p id="tutor-mode-help" data-tutor-mode-help>Tu idea primero: propón un paso y avanza con pistas y revisión. Tu ejercicio lo resuelves tú.</p>
+        <p data-tutor-mode-status role="status" aria-live="polite"></p>
+      </div>
+      <p class="composer__hint" data-composer-hint>Enter envía tu mensaje · Shift + Enter agrega una línea nueva</p>
+
       <form class="composer__form" data-composer-form>
         <div class="composer__field">
           <textarea class="composer__textarea" data-composer-input rows="1" maxlength="4000"
