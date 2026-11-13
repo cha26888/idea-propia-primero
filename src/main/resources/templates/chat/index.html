@@ -38,8 +38,17 @@
       <li class="sidebar__empty">Cargando conversaciones…</li>
     </ul>
     <div class="sidebar__footer">
-      <a href="#" aria-disabled="true">Diario <span class="sidebar__soon">Próximamente</span></a>
-      <a href="#" aria-disabled="true">Tareas <span class="sidebar__soon">Próximamente</span></a>
+
+      <div class="sidebar__future">
+          <span>Diario</span>
+          <span class="sidebar__soon">Próximamente</span>
+      </div>
+
+      <div class="sidebar__future">
+          <span>Tareas</span>
+          <span class="sidebar__soon">Próximamente</span>
+      </div>
+
       <a th:href="@{/welcome}">← Volver a mi cuenta</a>
     </div>
   </aside>
@@ -54,7 +63,7 @@
     </div>
 
     <div class="composer">
-      <p class="composer__hint" data-composer-hint>Enter envía tu mensaje · Shift + Enter agrega una línea nueva</p>
+      <p class="composer__hint" data-composer-hint>Enter envía tu mensaje mientras que Shift + Enter agrega una línea nueva</p>
       <form class="composer__form" data-composer-form>
         <div class="composer__field">
           <textarea class="composer__textarea" data-composer-input rows="1" maxlength="4000"

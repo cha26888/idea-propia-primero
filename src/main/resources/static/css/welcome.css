@@ -1,0 +1,350 @@
+/* ==========================================
+   WELCOME HUB - IDEA PROPIA PRIMERO
+   ========================================== */
+
+
+/* ==========================================
+   1. FONDO GENERAL
+   ========================================== */
+
+.welcome-page {
+    background: #f2f5ef;
+    color: #203c35;
+}
+
+
+/* ==========================================
+   2. DISTRIBUCION PRINCIPAL
+   ========================================== */
+
+.welcome-page .page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 3rem 1.5rem;
+}
+
+
+/* ==========================================
+   3. CONTENEDOR PRINCIPAL
+   ========================================== */
+
+.welcome-hub {
+    width: 100%;
+    max-width: 850px;
+
+    padding: 3rem;
+
+    text-align: center;
+
+    background: #ffffff;
+    color: #203c35;
+
+    border: 1px solid #dce5df;
+    border-radius: var(--radius-card);
+
+    box-shadow: var(--shadow-card);
+}
+
+
+/* ==========================================
+   4. IDENTIDAD DEL PROYECTO
+   ========================================== */
+
+.welcome-hub > .brand {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    margin-bottom: 2rem;
+
+    color: #235f49;
+}
+
+
+/* ==========================================
+   5. BIENVENIDA
+   ========================================== */
+
+.welcome-header {
+    margin-bottom: 3rem;
+}
+
+.welcome-header h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+
+    margin-top: 0;
+    margin-bottom: 0;
+
+    color: #203c35;
+}
+
+
+/* ==========================================
+   6. ENCABEZADOS DE SECCIONES
+   ========================================== */
+
+.welcome-services h2,
+.welcome-coming h2 {
+    font-size: 1.5rem;
+
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+
+    color: #203c35;
+}
+
+
+/* ==========================================
+   7. TARJETA PRINCIPAL DEL CHAT
+   ========================================== */
+
+.welcome-service {
+    max-width: 550px;
+
+    margin: 0 auto;
+
+    padding: 2rem;
+
+    background: #eef2ea;
+
+    border: 1px solid #dce5df;
+    border-radius: var(--radius-card);
+
+    color: #203c35;
+}
+
+
+/* Destacar servicio disponible */
+
+.welcome-service--active {
+    border: 2px solid #235f49;
+}
+
+
+/* Titulo del chat */
+
+.welcome-service h3 {
+    font-size: 1.8rem;
+
+    margin-top: 0;
+    margin-bottom: 1rem;
+
+    color: #203c35;
+}
+
+
+/* Descripcion del chat */
+
+.welcome-service p {
+    color: #52635b;
+
+    line-height: 1.6;
+
+    margin-bottom: 1.5rem;
+}
+
+
+/* ==========================================
+   8. BOTON PRINCIPAL
+   ========================================== */
+
+.welcome-service .button {
+    max-width: 300px;
+
+    margin: 0 auto;
+}
+
+.welcome-page .button--primary {
+    background: #235f49;
+    color: #ffffff;
+
+    border-color: #235f49;
+}
+
+.welcome-page .button--primary:hover {
+    background: #194632;
+    color: #ffffff;
+
+    border-color: #194632;
+}
+
+
+/* ==========================================
+   9. SECCION PROXIMAMENTE
+   ========================================== */
+
+.welcome-coming {
+    margin-top: 3rem;
+
+    padding-top: 2.5rem;
+
+    border-top: 1px solid #899d93;
+}
+
+
+/* Descripcion */
+
+.welcome-coming > p {
+    color: #52635b;
+
+    line-height: 1.6;
+
+    margin-bottom: 1.5rem;
+}
+
+
+/* ==========================================
+   10. DISTRIBUCION DE FUTUROS SERVICIOS
+   ========================================== */
+
+.welcome-coming__grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 1rem;
+}
+
+
+/* ==========================================
+   11. TARJETAS JOURNAL Y TASKS
+   ========================================== */
+
+.welcome-coming__item {
+    padding: 1.5rem;
+
+    background: #f2f5ef;
+
+    border: 1px solid #dce5df;
+    border-radius: var(--radius-card);
+
+    color: #203c35;
+}
+
+
+/* Titulos */
+
+.welcome-coming__item h3 {
+    color: #203c35;
+
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+
+/* Descripciones */
+
+.welcome-coming__item p {
+    color: #52635b;
+
+    font-size: 0.95rem;
+    line-height: 1.5;
+
+    margin-bottom: 0;
+}
+
+
+/* ==========================================
+   12. ACCESO DE AUXILIARES
+   ========================================== */
+
+.welcome-admin {
+    margin-top: 2rem;
+
+    text-align: center;
+}
+
+.welcome-admin a {
+    color: #235f49;
+
+    font-weight: 600;
+}
+
+.welcome-admin a:hover {
+    color: #194632;
+}
+
+
+/* ==========================================
+   13. CERRAR SESION
+   ========================================== */
+
+.welcome-logout {
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 2rem;
+}
+
+.welcome-logout form {
+    display: flex;
+
+    justify-content: center;
+}
+
+
+/* Boton secundario */
+
+.welcome-logout .button--secondary {
+    background: #ffffff;
+
+    color: #235f49;
+
+    border: 1px solid #235f49;
+
+    border-radius: 0.5rem;
+
+    padding: 0.75rem 1.25rem;
+
+    font-weight: 600;
+
+    transition: background 0.2s ease;
+}
+
+
+/* Efecto hover */
+
+.welcome-logout .button--secondary:hover {
+    background: #eef2ea;
+
+    color: #194632;
+
+    border-color: #194632;
+}
+
+
+/* ==========================================
+   14. RESPONSIVE
+   ========================================== */
+
+@media (max-width: 600px) {
+
+    .welcome-page .page {
+        padding: 1.5rem 1rem;
+    }
+
+    .welcome-hub {
+        padding: 2rem 1.25rem;
+    }
+
+    .welcome-header {
+        margin-bottom: 2rem;
+    }
+
+    .welcome-service {
+        padding: 1.5rem;
+    }
+
+    .welcome-coming__grid {
+        grid-template-columns: 1fr;
+    }
+
+}

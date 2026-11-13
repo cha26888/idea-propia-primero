@@ -35,10 +35,34 @@
 .l-eyebrow{display:inline-block;background:var(--l-gold-bg);color:var(--l-gold);border:1px solid #e3d29b;border-radius:99px;padding:.3rem .85rem;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .l-hero h1{font-size:clamp(2.6rem,6.2vw,4.6rem);margin:var(--space-3) 0 var(--space-3)}
 .l-hero h1 em{font-style:italic;color:var(--color-primary)}
-.l-lead{font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.55;color:var(--color-muted);max-width:34rem}
+/* Descripcion principal de bienvenida */
+
+.l-lead {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.65;
+    color: var(--color-muted);
+    max-width: 34rem;
+
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+}
 
 .l-access{background:var(--color-surface);border:1px solid var(--l-line);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:var(--space-4)}
-.l-access h2{font-size:1.6rem;margin-bottom:.4rem}
+/* Centrar encabezado de la tarjeta de acceso */
+
+.l-access h2 {
+    text-align: center;
+}
+
+.l-access__sub {
+    text-align: center;
+}
+.l-access h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
 .l-access__sub{color:var(--color-muted);margin-bottom:var(--space-3)!important}
 .l-or{display:flex;align-items:center;gap:var(--space-2);color:var(--color-muted);font-size:var(--text-small);margin:var(--space-2) 0}
 .l-or::before,.l-or::after{content:"";flex:1;height:1px;background:var(--l-line)}
@@ -56,20 +80,124 @@
 
 .l-section{padding:clamp(3rem,7vw,5.5rem) 0}
 .l-section--tint{background:var(--color-surface);border-top:1px solid var(--l-line);border-bottom:1px solid var(--l-line)}
-.l-head{max-width:40rem;margin-bottom:clamp(1.75rem,4vw,3rem)}
+/* Fondo blanco de la seccion El problema */
+
+#problema {
+    background: #ffffff;
+    border-top: 1px solid var(--l-line);
+    border-bottom: 1px solid var(--l-line);
+}
+
+/* Encabezados centrados de las secciones */
+
+.l-head {
+    max-width: 52rem;
+    margin: 0 auto clamp(1.75rem, 4vw, 3rem);
+    text-align: center;
+}
+
+.l-head h2 {
+    text-align: center;
+}
+
+.l-head p {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .l-head h2{font-size:clamp(2rem,4.2vw,3rem);margin-bottom:var(--space-2)}
 .l-head p{font-size:1.1rem;line-height:1.6;color:var(--color-muted)}
 .l-kicker{display:block;font-size:.8rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--space-1)}
 
-.l-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
-.l-card{background:var(--color-surface);border:1px solid var(--l-line);border-radius:var(--radius-card);padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-2)}
+.l-grid{display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--space-3)}
+.l-card {
+    background: var(--color-surface);
+    border: 1px solid var(--l-line);
+    border-radius: var(--radius-card);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
 .l-section--tint .l-card{background:var(--color-bg)}
+
+/* Tarjetas de El problema con verde suave */
+
+#problema .l-card {
+    background: #eef2ea;
+}
+
+/* Proporciones de las tarjetas del problema */
+
+#problema .l-card {
+    min-height: 18rem;
+    justify-content: center;
+    padding: 2.5rem 2rem;
+}
+
 .l-card h3{font-size:1.35rem}
+
+/* Centrar el contenido principal de las tarjetas de Como funciona */
+
+#como-funciona .l-card {
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+}
+
+#como-funciona .l-card .l-num {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#como-funciona .l-card h3 {
+    width: 100%;
+    text-align: center;
+}
+
+#como-funciona .l-card > p {
+    width: 100%;
+    text-align: center;
+}
+
+/* Centrar las tarjetas de El problema */
+
+#problema .l-card {
+    align-items: center;
+    text-align: center;
+}
+
+#problema .l-num {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#problema .l-card h3,
+#problema .l-card p {
+    width: 100%;
+    text-align: center;
+}
+
 .l-card p{color:var(--color-muted);line-height:1.6}
 .l-card--hi{border:2px solid var(--color-primary);box-shadow:var(--shadow-card);background:var(--color-surface)!important}
 .l-num{width:2.5rem;height:2.5rem;border-radius:50%;background:var(--color-primary);color:#fff;display:grid;place-items:center;font-weight:700}
 .l-card--plain .l-num{background:var(--l-tint);color:var(--color-primary)}
 .l-list{list-style:none;margin:var(--space-1) 0 0;padding:var(--space-2) 0 0;border-top:1px solid var(--l-line);display:grid;gap:.65rem}
+
+/* Listas alineadas a la izquierda dentro de tarjetas centradas */
+
+#como-funciona .l-list {
+    width: 100%;
+    text-align: left;
+    padding-left: 0;
+}
+
+#como-funciona .l-list li {
+    text-align: left;
+}
+
 .l-list li{position:relative;padding-left:1.6rem;line-height:1.5;color:var(--color-text);font-size:.97rem}
 .l-list li::before{content:"";position:absolute;left:.1rem;top:.5em;width:.55rem;height:.3rem;border-left:2px solid var(--color-primary);border-bottom:2px solid var(--color-primary);transform:rotate(-45deg)}
 
@@ -82,7 +210,15 @@
 .l-cta .button--secondary{background:transparent;color:#fff;border-color:#ffffffa0}
 .l-cta .button--secondary:hover{background:#ffffff1f}
 
-.l-faq{max-width:48rem}
+/* Contenedor centrado de preguntas frecuentes */
+
+.l-faq {
+    width: 100%;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .l-faq details{border-bottom:1px solid var(--color-border)}
 .l-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:var(--space-2);align-items:center;padding:1.25rem 0;font-weight:650;font-size:1.1rem}
 .l-faq summary::-webkit-details-marker{display:none}
@@ -93,6 +229,39 @@
 
 .l-footer{background:var(--color-text);color:#d3e0d9;padding:clamp(2.5rem,6vw,4rem) 0 var(--space-4);margin-top:clamp(3rem,7vw,5.5rem)}
 .l-footer__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:var(--space-4)}
+
+/* Centrar el contenido de cada columna del footer */
+
+.l-footer__grid > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.l-footer__grid h3 {
+    width: 100%;
+    text-align: center;
+}
+
+.l-footer__grid .l-brand {
+    justify-content: center;
+    text-align: center;
+}
+
+.l-footer__grid .l-footer__about {
+    text-align: center;
+}
+
+.l-footer__grid ul {
+    width: 100%;
+    text-align: center;
+}
+
+.l-footer__grid li {
+    text-align: center;
+}
+
 .l-footer .l-brand{color:#fff}
 .l-footer__about{margin-top:var(--space-2)!important;color:#b9cbc1!important;line-height:1.6;max-width:20rem;font-size:.95rem}
 .l-footer h3{font-family:inherit;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:var(--space-2)}
