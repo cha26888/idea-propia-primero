@@ -2,43 +2,75 @@
    WELCOME HUB - IDEA PROPIA PRIMERO
    ========================================== */
 
-/* Fondo y distribucion general */
+
+/* ==========================================
+   1. FONDO GENERAL
+   ========================================== */
 
 .welcome-page {
-    background: var(--color-bg);
+    background: #f2f5ef;
+    color: #203c35;
 }
+
+
+/* ==========================================
+   2. DISTRIBUCION PRINCIPAL
+   ========================================== */
 
 .welcome-page .page {
     min-height: 100vh;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     padding: 3rem 1.5rem;
 }
 
-/* Contenedor principal */
+
+/* ==========================================
+   3. CONTENEDOR PRINCIPAL
+   ========================================== */
 
 .welcome-hub {
     width: 100%;
     max-width: 850px;
+
     padding: 3rem;
+
     text-align: center;
-    background: var(--color-surface);
+
+    background: #ffffff;
+    color: #203c35;
+
+    border: 1px solid #dce5df;
     border-radius: var(--radius-card);
+
     box-shadow: var(--shadow-card);
 }
 
-/* Marca */
 
-.welcome-hub > .l-brand,
-.welcome-hub > a:first-child {
+/* ==========================================
+   4. IDENTIDAD DEL PROYECTO
+   ========================================== */
+
+.welcome-hub > .brand {
     display: flex;
+
     justify-content: center;
+    align-items: center;
+
     text-align: center;
+
     margin-bottom: 2rem;
+
+    color: #235f49;
 }
 
-/* Bienvenida */
+
+/* ==========================================
+   5. BIENVENIDA
+   ========================================== */
 
 .welcome-header {
     margin-bottom: 3rem;
@@ -46,172 +78,258 @@
 
 .welcome-header h1 {
     font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: 1rem;
+
+    margin-top: 0;
+    margin-bottom: 0;
+
+    color: #203c35;
 }
 
-.welcome-header p {
-    color: #52635b;
-    line-height: 1.6;
-    max-width: 550px;
-    margin: 0 auto;
-}
 
-/* Encabezados de secciones */
+/* ==========================================
+   6. ENCABEZADOS DE SECCIONES
+   ========================================== */
 
 .welcome-services h2,
 .welcome-coming h2 {
     font-size: 1.5rem;
+
+    margin-top: 0;
     margin-bottom: 1.5rem;
-    color: var(--color-text);
+
+    color: #203c35;
 }
 
-/* Tarjeta principal del chat */
+
+/* ==========================================
+   7. TARJETA PRINCIPAL DEL CHAT
+   ========================================== */
 
 .welcome-service {
     max-width: 550px;
+
     margin: 0 auto;
+
     padding: 2rem;
 
     background: #eef2ea;
+
     border: 1px solid #dce5df;
     border-radius: var(--radius-card);
 
     color: #203c35;
 }
 
+
+/* Destacar servicio disponible */
+
 .welcome-service--active {
-    border: 2px solid var(--color-primary);
+    border: 2px solid #235f49;
 }
 
-/* Estado disponible */
 
-.welcome-status {
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    background: var(--color-success-bg);
-    color: var(--color-success);
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-/* Informacion del servicio */
+/* Titulo del chat */
 
 .welcome-service h3 {
     font-size: 1.8rem;
+
+    margin-top: 0;
     margin-bottom: 1rem;
+
+    color: #203c35;
 }
+
+
+/* Descripcion del chat */
 
 .welcome-service p {
     color: #52635b;
+
     line-height: 1.6;
+
     margin-bottom: 1.5rem;
 }
 
-/* Boton del chat */
+
+/* ==========================================
+   8. BOTON PRINCIPAL
+   ========================================== */
 
 .welcome-service .button {
     max-width: 300px;
+
     margin: 0 auto;
 }
 
-/* Proximamente */
+.welcome-page .button--primary {
+    background: #235f49;
+    color: #ffffff;
+
+    border-color: #235f49;
+}
+
+.welcome-page .button--primary:hover {
+    background: #194632;
+    color: #ffffff;
+
+    border-color: #194632;
+}
+
+
+/* ==========================================
+   9. SECCION PROXIMAMENTE
+   ========================================== */
 
 .welcome-coming {
     margin-top: 3rem;
+
     padding-top: 2.5rem;
-    border-top: 1px solid var(--color-border);
+
+    border-top: 1px solid #899d93;
 }
+
+
+/* Descripcion */
 
 .welcome-coming > p {
     color: #52635b;
-    margin-bottom: 1.5rem;
+
     line-height: 1.6;
+
+    margin-bottom: 1.5rem;
 }
 
-/* Distribucion de futuros servicios */
+
+/* ==========================================
+   10. DISTRIBUCION DE FUTUROS SERVICIOS
+   ========================================== */
 
 .welcome-coming__grid {
     display: grid;
+
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
     gap: 1rem;
 }
 
-/* Tarjetas de proximos servicios */
+
+/* ==========================================
+   11. TARJETAS JOURNAL Y TASKS
+   ========================================== */
 
 .welcome-coming__item {
     padding: 1.5rem;
 
     background: #f2f5ef;
+
     border: 1px solid #dce5df;
     border-radius: var(--radius-card);
 
     color: #203c35;
 }
 
+
+/* Titulos */
+
 .welcome-coming__item h3 {
-    color: var(--color-text);
+    color: #203c35;
+
+    margin-top: 0;
     margin-bottom: 0.5rem;
 }
 
+
+/* Descripciones */
+
 .welcome-coming__item p {
     color: #52635b;
+
     font-size: 0.95rem;
     line-height: 1.5;
+
+    margin-bottom: 0;
 }
 
-/* Auxiliares */
+
+/* ==========================================
+   12. ACCESO DE AUXILIARES
+   ========================================== */
 
 .welcome-admin {
     margin-top: 2rem;
+
     text-align: center;
 }
 
 .welcome-admin a {
-    color: var(--color-primary);
+    color: #235f49;
+
     font-weight: 600;
 }
 
-/* Cerrar sesion */
+.welcome-admin a:hover {
+    color: #194632;
+}
+
+
+/* ==========================================
+   13. CERRAR SESION
+   ========================================== */
 
 .welcome-logout {
     display: flex;
+
     justify-content: center;
+
     margin-top: 2rem;
 }
 
 .welcome-logout form {
     display: flex;
+
     justify-content: center;
 }
-/* Boton de cerrar sesion */
+
+
+/* Boton secundario */
 
 .welcome-logout .button--secondary {
     background: #ffffff;
+
     color: #235f49;
+
     border: 1px solid #235f49;
 
     border-radius: 0.5rem;
+
     padding: 0.75rem 1.25rem;
 
     font-weight: 600;
+
     transition: background 0.2s ease;
 }
 
-/* Efecto al pasar el cursor */
+
+/* Efecto hover */
 
 .welcome-logout .button--secondary:hover {
     background: #eef2ea;
+
     color: #194632;
+
     border-color: #194632;
 }
 
+
 /* ==========================================
-   RESPONSIVE
+   14. RESPONSIVE
    ========================================== */
 
 @media (max-width: 600px) {
+
+    .welcome-page .page {
+        padding: 1.5rem 1rem;
+    }
 
     .welcome-hub {
         padding: 2rem 1.25rem;
@@ -229,66 +347,4 @@
         grid-template-columns: 1fr;
     }
 
-}
-
-/* ==========================================
-   PALETA VERDE - WELCOME
-   ========================================== */
-
-/* Fondo general */
-
-.welcome-page {
-    background: #f2f5ef;
-    color: #203c35;
-}
-
-/* Contenedor principal */
-
-.welcome-hub {
-    background: #ffffff;
-    color: #203c35;
-    border-color: #dce5df;
-}
-
-/* Titulos */
-
-.welcome-hub h1,
-.welcome-hub h2,
-.welcome-hub h3 {
-    color: #203c35;
-}
-
-/* Boton principal */
-
-.welcome-page .button--primary {
-    background: #235f49;
-    color: #ffffff;
-    border-color: #235f49;
-}
-
-/* Boton principal al pasar el cursor */
-
-.welcome-page .button--primary:hover {
-    background: #194632;
-    border-color: #194632;
-    color: #ffffff;
-}
-
-/* Enlaces */
-
-.welcome-page a:not(.button) {
-    color: #235f49;
-}
-
-/* Tarjeta del chat */
-
-.welcome-service--active {
-    border-color: #235f49;
-}
-
-/* Estado disponible */
-
-.welcome-status {
-    background: #edf7ef;
-    color: #225d38;
 }

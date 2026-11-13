@@ -1,13 +1,39 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/ui :: head('Bienvenida')}"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bienvenida · Idea propia primero</title>
+
+    <!-- Icono -->
+    <link rel="icon"
+          type="image/png"
+          th:href="@{/images/icon.png}"
+          href="/images/icon.png">
+
+    <!-- Estilos globales -->
+    <link rel="stylesheet"
+          th:href="@{/css/theme.css}"
+          href="/css/theme.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/components.css}"
+          href="/css/components.css">
+
+    <!-- Estilos exclusivos de Welcome -->
+    <link rel="stylesheet"
+          th:href="@{/css/welcome.css}"
+          href="/css/welcome.css">
+
+    <!-- JavaScript compartido -->
+    <script defer
+            th:src="@{/js/auth.js}"
+            src="/js/auth.js"></script>
+</head>
 
 <body class="welcome-page">
-    
-    <link rel="stylesheet"
-      th:href="@{/css/welcome.css}"
-      href="/css/welcome.css">
 
     <main class="page">
 
@@ -25,12 +51,15 @@
 
             </header>
 
-            <!-- Servicios -->
-            <section class="welcome-services" aria-labelledby="services-title">
+            <!-- Servicios disponibles -->
+            <section class="welcome-services"
+                     aria-labelledby="services-title">
 
-                <h2 id="services-title">Explora nuestras herramientas</h2>
+                <h2 id="services-title">
+                    Explora nuestras herramientas
+                </h2>
 
-                <!-- Chat disponible -->
+                <!-- Chat -->
                 <article class="welcome-service welcome-service--active">
 
                     <h3>Chat</h3>
@@ -41,7 +70,8 @@
                     </p>
 
                     <a class="button button--primary button--block"
-                       th:href="@{/chat}">
+                       th:href="@{/chat}"
+                       href="/chat">
                         Ir al chat →
                     </a>
 
@@ -49,10 +79,13 @@
 
             </section>
 
-            <!-- Proximos servicios -->
-            <section class="welcome-coming" aria-labelledby="coming-title">
+            <!-- Servicios futuros -->
+            <section class="welcome-coming"
+                     aria-labelledby="coming-title">
 
-                <h2 id="coming-title">Próximamente</h2>
+                <h2 id="coming-title">
+                    Próximamente
+                </h2>
 
                 <p>
                     Estamos preparando nuevas herramientas
@@ -61,37 +94,55 @@
 
                 <div class="welcome-coming__grid">
 
+                    <!-- Journal -->
                     <article class="welcome-coming__item">
+
                         <h3>Journal</h3>
-                        <p>Tu diario de reflexión.</p>
+
+                        <p>
+                            Tu diario de reflexión.
+                        </p>
+
                     </article>
 
+                    <!-- Tasks -->
                     <article class="welcome-coming__item">
+
                         <h3>Tasks</h3>
-                        <p>Retos del mundo real.</p>
+
+                        <p>
+                            Retos del mundo real.
+                        </p>
+
                     </article>
 
                 </div>
 
             </section>
 
-            <!-- Acceso de auxiliares -->
+            <!-- Acceso exclusivo para auxiliares -->
             <p class="welcome-admin" th:if="${auxiliar}">
-                <a th:href="@{/admin}">
+
+                <a th:href="@{/admin}" href="/admin">
                     Entrar al espacio de auxiliares
                 </a>
+
             </p>
 
-            <!-- Cerrar sesion -->
+            <!-- Cerrar sesión -->
             <div class="welcome-logout">
+
                 <form th:replace="~{fragments/logout :: logout}"></form>
+
             </div>
 
         </section>
 
     </main>
 
-    <script src="/js/theme.js"></script>
+    <!-- Configuración del tema -->
+    <script th:src="@{/js/theme.js}"
+            src="/js/theme.js"></script>
 
 </body>
 
