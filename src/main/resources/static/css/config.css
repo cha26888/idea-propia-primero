@@ -1,141 +1,188 @@
+/* ==========================================
+   CONFIGURACION - IDEA PROPIA PRIMERO
+   ========================================== */
 
+/* CONTENEDOR GENERAL */
 
-/* =========================
-   CONTENEDOR PRINCIPAL
-========================= */
+.settings-page {
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-text);
 
-.settings {
-    width: min(100% - 2rem, 760px);
-    margin: 3rem auto;
-    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-     background: var(--color-surface);
+    padding: 3rem 1.5rem;
+}
+
+/* TARJETA PRINCIPAL */
+
+.settings-page .settings {
+    width: 100%;
+    max-width: 760px;
+
+    margin: 0;
+    padding: 3rem;
+
+    background: var(--color-surface);
     color: var(--color-text);
 
     border: 1px solid var(--color-border);
-    border-radius: 18px;
+    border-radius: var(--radius-card);
+
+    box-shadow: var(--shadow-card);
+
+    text-align: center;
 }
 
-/* =========================
-   ENCABEZADO
-========================= */
+/* ENCABEZADO */
 
 .settings__header {
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
+
     border-bottom: 1px solid var(--color-border);
+    text-align: center;
 }
 
 .settings__header h1 {
-    margin: 0 0 .5rem;
-    font-size: 1.8rem;
+    margin: 0 0 0.75rem;
+
+    font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 750;
-    letter-spacing: -.03em;
+    letter-spacing: -0.03em;
+
+    color: var(--color-text);
 }
 
 .settings__header p {
     margin: 0;
+
     color: var(--color-muted);
-    font-size: .95rem;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-/* =========================
-   SECCIONES
-========================= */
+/* SECCIONES */
 
 .settings__section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    align-items: center;
 
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--color-border);
-}
+    gap: 1.5rem;
 
-.settings__section:last-child {
-    border-bottom: none;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+
+    background: var(--color-bg);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+
+    text-align: center;
 }
 
 .settings__section h2 {
     margin: 0;
-    font-size: 1.1rem;
+
+    font-size: 1.5rem;
     font-weight: 700;
+
+    color: var(--color-text);
 }
 
-.settings__section h3 {
-    margin: .75rem 0 0;
-    font-size: .95rem;
-    font-weight: 650;
+/* CAMPOS */
+
+.settings__field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 0.75rem;
+
+    width: 100%;
 }
 
-.settings__section label {
-    font-size: .9rem;
-    font-weight: 550;
+.settings__field label {
+    font-size: 1.05rem;
+    font-weight: 600;
+
+    color: var(--color-text);
 }
 
-/* =========================
-   SELECTOR DE TEMA
-========================= */
+.settings__help {
+    margin: 0;
+
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* SELECTOR DE TEMA */
 
 #theme {
     width: 100%;
-    padding: .85rem 1rem;
+    max-width: 300px;
+
+    padding: 0.85rem 1rem;
 
     background: var(--color-surface);
     color: var(--color-text);
 
     border: 1px solid var(--color-border);
-    border-radius: var(--settings-radius);
+    border-radius: var(--radius-control);
 
     font: inherit;
-    cursor: pointer;
+    text-align: center;
 
-    transition: border-color var(--settings-transition);
+    cursor: pointer;
 }
 
-#theme:hover,
-#theme:focus-visible {
+#theme:hover {
     border-color: var(--color-primary);
 }
 
 #theme:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
 }
 
-
-/* =========================
-   SELECTOR DE COLOR
-========================= */
+/* SELECTOR DE COLOR */
 
 .color-picker {
     display: flex;
     flex-direction: column;
-    gap: .75rem;
+    align-items: center;
+
+    gap: 0.75rem;
+
+    width: 100%;
 }
 
-.color-picker label {
-    font-size: .9rem;
-    font-weight: 600;
-    color: var(--color-text);
-}
-
-.color-picker__control {
+.color-picker__controls {
     display: flex;
     align-items: center;
+    justify-content: center;
+
     gap: 1rem;
+    margin: 0.5rem 0;
+
     flex-wrap: wrap;
 }
 
 #accent-color {
-    width: 52px;
-    height: 42px;
+    width: 65px;
+    height: 45px;
+
     padding: 4px;
 
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-
     background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-control);
+
     cursor: pointer;
 }
 
@@ -150,107 +197,120 @@
 
 #color-value {
     font-family: monospace;
-    font-size: .9rem;
+    font-size: 1rem;
     font-weight: 600;
+
     color: var(--color-text);
 }
 
-#reset-color {
-    margin-left: auto;
-    padding: .65rem 1rem;
+/* BOTON RESTABLECER */
+
+.settings-page #reset-color {
+    margin: 0.5rem auto 0;
+
+    padding: 0.75rem 1.5rem;
 
     background: var(--color-surface);
-    color: var(--color-text);
+    color: var(--color-primary);
 
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-control);
 
     font: inherit;
-    font-size: .85rem;
+    font-weight: 600;
+
     cursor: pointer;
 
-    transition: border-color .2s;
+    transition: background-color 0.2s ease;
 }
 
-#reset-color:hover {
-    border-color: var(--color-primary);
+.settings-page #reset-color:hover {
+    background: var(--color-bg);
 }
 
-/* =========================
-   CHECKBOX DE ANIMACIONES
-========================= */
+/* CHECKBOX DE ANIMACIONES */
 
-.settings__section label:has(input[type="checkbox"]) {
-    display: flex;
+.settings__checkbox {
+    display: inline-flex;
     align-items: center;
-    gap: .75rem;
+    justify-content: center;
+
+    gap: 0.75rem;
 
     padding: 1rem;
 
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--settings-radius);
+    color: var(--color-text);
 
     cursor: pointer;
 }
 
-.settings__section input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+.settings__checkbox input {
+    width: 20px;
+    height: 20px;
 
     accent-color: var(--color-primary);
+
     cursor: pointer;
 }
 
-/* =========================
-   TRANSICIONES
-========================= */
+/* BOTON VOLVER */
 
-body,
-.settings,
+.settings__footer {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 2rem;
+}
+
+.settings__footer .button {
+    min-width: 200px;
+    text-align: center;
+}
+
+/* TRANSICIONES */
+
+.settings-page,
+.settings-page .settings,
 .settings__section,
 #theme {
     transition:
-        background-color var(--settings-transition),
-        color var(--settings-transition),
-        border-color var(--settings-transition);
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
 @media (max-width: 600px) {
-    .settings {
-        width: calc(100% - 1.5rem);
-        margin: 1.5rem auto;
-        padding: 1.25rem;
+
+    .settings-page {
+        padding: 1.5rem 1rem;
     }
 
-    .settings__header h1 {
-        font-size: 1.5rem;
+    .settings-page .settings {
+        padding: 2rem 1.25rem;
     }
 
     .settings__section {
-        padding: 1.25rem 0;
+        padding: 1.5rem 1rem;
     }
 
-    .color-options button {
-        width: 38px;
-        height: 38px;
+    #theme {
+        max-width: 100%;
     }
+
 }
 
-/* =========================
-   ACCESIBILIDAD
-========================= */
+/* ACCESIBILIDAD */
 
 @media (prefers-reduced-motion: reduce) {
-    .settings,
-    .settings *,
-    .settings *::before,
-    .settings *::after {
+
+    .settings-page,
+    .settings-page *,
+    .settings-page *::before,
+    .settings-page *::after {
         transition: none !important;
         animation: none !important;
     }
+
 }

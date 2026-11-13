@@ -1,70 +1,150 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración</title>
-    <link rel="stylesheet" th:href="@{/css/theme.css}">
-<script th:src="@{/js/theme.js}"></script>
-<link rel="icon" type="image/png" href="/images/config.png">
-<link rel="stylesheet" th:href="@{/css/components.css}">
-<link rel="stylesheet" th:href="@{/css/config.css}">
-<script defer th:src="@{/js/settings.js}"></script>
+
+    <title>Configuración de Idea propia primero</title>
+
+    <!-- Icono -->
+    <link rel="icon"
+          type="image/png"
+          th:href="@{/images/config.png}"
+          href="/images/config.png">
+
+    <!-- Estilos globales -->
+    <link rel="stylesheet"
+          th:href="@{/css/theme.css}"
+          href="/css/theme.css">
+
+    <link rel="stylesheet"
+          th:href="@{/css/components.css}"
+          href="/css/components.css">
+
+    <!-- Estilos exclusivos de configuracion -->
+    <link rel="stylesheet"
+          th:href="@{/css/config.css}"
+          href="/css/config.css">
+
+    <!-- JavaScript -->
+    <script defer
+            th:src="@{/js/theme.js}"
+            src="/js/theme.js"></script>
+
+    <script defer
+            th:src="@{/js/settings.js}"
+            src="/js/settings.js"></script>
 </head>
-<body>
-    
 
-<main class="settings">
-  <header class="settings__header">
-    <h1>Configuración</h1>
-    <p>Personaliza tu experiencia con la IA.</p>
-  </header>
+<body class="settings-page">
 
-  <section class="settings__section">
-    <h2>Apariencia</h2>
+    <main class="settings" aria-labelledby="settings-title">
 
-    <label for="theme">Tema</label>
-    <select id="theme">
-      <option value="light">Claro</option>
-      <option value="dark">Oscuro</option>
-      <option value="system">Sistema</option>
-    </select>
+        <!-- Encabezado -->
+        <header class="settings__header">
 
-  
-    
+            <h1 id="settings-title">Configuración</h1>
 
-<div class="color-picker">
-    <label for="accent-color">
-        Color principal
-    </label>
+            <p>Personaliza tu experiencia con la IA.</p>
 
-    <input
-        type="color"
-        id="accent-color"
-        value="#235f49"
-    >
+        </header>
 
-    <span id="color-value">#235F49</span>
+        <!-- Apariencia -->
+        <section class="settings__section" aria-labelledby="appearance-title">
 
-    <button type="button" id="reset-color">
-        Restablecer
-    </button>
-</div>
+            <h2 id="appearance-title">Apariencia</h2>
 
+            <!-- Selector de tema -->
+            <div class="settings__field">
 
-  </section>
+                <label for="theme">Tema</label>
 
-  <section class="settings__section">
-    <h2>Experiencia</h2>
+                <p class="settings__help">
+                    Elige cómo quieres visualizar la plataforma.
+                </p>
 
-    <label>
-      <input type="checkbox" id="animations" checked>
-      Activar animaciones
-    </label>
-  </section>
-<a class="button button--secondary" th:href="@{/chat}"> Volver </a>
-</main>
-<script src="/js/theme.js"></script>
-<script src="/js/settings.js"></script>
+                <select id="theme" name="theme">
+                    <option value="light">Claro</option>
+                    <option value="dark">Oscuro</option>
+                    <option value="system">Sistema</option>
+                </select>
+
+            </div>
+
+            <!-- Selector de color -->
+            <div class="settings__field color-picker">
+
+                <label for="accent-color">
+                    Color principal
+                </label>
+
+                <p class="settings__help">
+                    Personaliza el color de los elementos destacados.
+                </p>
+
+                <div class="color-picker__controls">
+
+                    <input
+                        type="color"
+                        id="accent-color"
+                        name="accent-color"
+                        value="#235f49"
+                        aria-label="Seleccionar color principal">
+
+                    <output id="color-value" for="accent-color">
+                        #235F49
+                    </output>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="reset-color"
+                    class="button button--secondary">
+
+                    Restablecer color
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- Experiencia -->
+        <section class="settings__section" aria-labelledby="experience-title">
+
+            <h2 id="experience-title">Experiencia</h2>
+
+            <label class="settings__checkbox" for="animations">
+
+                <input
+                    type="checkbox"
+                    id="animations"
+                    name="animations"
+                    checked>
+
+                <span>Activar animaciones</span>
+
+            </label>
+
+        </section>
+
+        <!-- Navegacion -->
+        <footer class="settings__footer">
+
+            <a class="button button--primary"
+               th:href="@{/chat}"
+               href="/chat">
+
+                Volver al chat
+
+            </a>
+
+        </footer>
+
+    </main>
+
 </body>
+
 </html>
