@@ -14,26 +14,51 @@
 </head>
 <body class="study-body">
   <header class="study-header"><a href="/chat">← Volver al tutor</a><strong>IDEA PROPIA PRIMERO</strong><a href="/config">Personalizar</a></header>
-  <main class="study-shell">
-    <h1>Tu espacio de estudio</h1><p>Organiza lo pendiente, practica y registra lo que aprendiste por tu cuenta.</p>
-    <nav class="study-nav" aria-label="Secciones de estudio"><a href="#daily">Práctica diaria</a><a href="#tasks">Pendientes</a><a href="#guides">Guías</a><a href="#journal">Diario</a><a href="#memory">Perfil y recuerdos</a></nav>
-    <p id="study-status" role="status" aria-live="polite">Cargando…</p>
-    <section id="daily" class="study-card"><h2>Gimnasio mental · Práctica diaria</h2><p>Elige una respuesta y explica tu razón antes de ver la devolución. Es práctica, no una medición de inteligencia.</p><div id="daily-content"></div></section>
-    <section id="tasks" class="study-card"><h2>Pendientes y calendario</h2><p>El tutor puede considerar tus próximos pendientes al ayudarte. Las fechas se muestran para Guatemala; no se envían notificaciones.</p>
-      <form id="task-form" class="study-form"><label>Pendiente<input name="title" required maxlength="160" placeholder="Preparar parcial de álgebra"></label><label>Curso<input name="course" maxlength="80" placeholder="Álgebra"></label><label>Fecha<input name="dueDate" type="date" required></label><button class="button button--primary">Añadir pendiente</button></form>
-      <details><summary>Importar calendario institucional (.ics)</summary><p>Exporta un archivo .ics del calendario de tu institución. Esta importación es manual: no expande eventos recurrentes ni elimina cancelaciones anteriores.</p>
-        <form id="calendar-form" class="study-form"><label>Archivo .ics<input name="calendar" type="file" accept=".ics,text/calendar" required></label><label>Curso o institución<input name="course" maxlength="80"></label><button class="button button--secondary">Importar fechas</button></form>
-      </details><div id="task-list" class="study-list"></div>
+  <div class="study-layout">
+    <aside class="study-sidebar"><a class="study-brand" href="/study">Mi estudio<span>Un paso tuyo, cada día.</span></a>
+      <nav class="study-nav" aria-label="Secciones de estudio">
+        <a href="#tasks"><span>01</span> Calendario y entregas</a><a href="#daily"><span>02</span> Gimnasio mental</a>
+        <a href="#guides"><span>03</span> Guías de estudio</a><a href="#journal"><span>04</span> Mi diario</a><a href="#memory"><span>05</span> Perfil y recuerdos</a>
+      </nav><a class="study-return" href="/chat">← Abrir el tutor</a>
+    </aside>
+    <main class="study-shell">
+    <div class="study-page-heading"><div><p class="study-eyebrow">TU ESPACIO DE APRENDIZAJE</p><h1 id="section-title">Calendario y entregas</h1></div><span id="today-label" class="study-muted"></span></div>
+    <p id="study-status" role="status" aria-live="polite">Cargando tu espacio…</p>
+    <section id="daily" class="study-card study-panel" hidden><h2>Gimnasio mental · Práctica diaria</h2><p>Elige una respuesta y explica tu razón antes de ver la devolución. Es práctica, no una medición de inteligencia.</p><div id="daily-content"></div></section>
+    <section id="tasks" class="study-panel" aria-label="Calendario y entregas">
+      <div class="study-stats" id="agenda-stats"></div>
+      <div class="calendar-topline"><div><h2>Tu semana empieza aquí</h2><p class="study-muted">Entregas y actividades separadas. Fechas y horas de Guatemala.</p></div>
+        <div class="study-actions"><button type="button" class="study-small-button" id="open-task">+ Nueva entrega</button><button type="button" class="button button--primary" id="open-connection">Conectar Canvas</button></div>
+      </div>
+      <div class="study-card calendar-connection"><span class="connection-dot" aria-hidden="true"></span><div><strong id="connection-title">Calendario local</strong><p id="connection-status" class="study-muted"></p></div><button type="button" class="study-small-button" id="sync-calendar" hidden>Actualizar ahora</button></div>
+      <details id="connection-details" class="study-card compact-card"><summary>Conexión e importación</summary>
+        <p>En Canvas abre <strong>Calendario → Calendar Feed / Fuente del calendario</strong> y copia la URL. Conectarla reemplaza la copia importada anterior; conserva tus entregas manuales y las marcas de completado por identificador.</p>
+        <form id="feed-form" class="study-form inline-form"><label>URL privada del calendario<input name="url" type="url" required maxlength="2000" autocomplete="off" placeholder="https://tu-institucion.instructure.com/feeds/calendars/….ics"></label><label>Institución<input name="course" maxlength="80" value="UVG"></label><button class="button button--primary">Conectar y actualizar</button></form>
+        <button type="button" id="disconnect-calendar" class="study-small-button" hidden>Desconectar y conservar copia local</button>
+        <p class="study-muted">La conexión consulta fechas; no verifica tus entregas ni modifica Canvas.</p>
+        <details><summary>Importar solo un archivo .ics</summary><p class="study-muted">Es una copia fija. Usa la URL de arriba para recibir cambios.</p><form id="calendar-form" class="study-form inline-form"><label>Archivo .ics<input name="calendar" type="file" accept=".ics,text/calendar" required></label><label>Institución<input name="course" maxlength="80"></label><button class="button button--secondary">Importar copia</button></form></details>
+      </details>
+      <details id="new-task-details" class="study-card compact-card"><summary>Añadir una entrega personal</summary><form id="task-form" class="study-form inline-form"><label>Entrega<input name="title" required maxlength="160" placeholder="Entrega final de POO"></label><label>Curso<input name="course" maxlength="80" placeholder="Programación orientada a objetos"></label><label>Fecha<input name="dueDate" type="date" required></label><button class="button button--primary">Guardar entrega</button></form></details>
+      <div class="calendar-workspace">
+        <div class="study-card month-card">
+          <div class="month-toolbar"><h2 id="month-label"></h2><div class="study-actions"><button id="previous-month" type="button" aria-label="Mes anterior">‹</button><button id="calendar-today" type="button">Hoy</button><button id="next-month" type="button" aria-label="Mes siguiente">›</button></div></div>
+          <div class="calendar-weekdays" aria-hidden="true"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span></div>
+          <div id="calendar-grid" class="calendar-grid" aria-label="Seleccionar día"></div>
+          <div class="calendar-legend"><span><i class="dot-task"></i> Entrega</span><span><i class="dot-event"></i> Evento / clase</span><span><i class="dot-review"></i> Por clasificar</span></div>
+        </div>
+        <aside class="study-card day-card"><p class="study-eyebrow">TU AGENDA</p><h2 id="selected-date"></h2><div id="day-agenda" class="study-list"></div></aside>
+      </div>
+      <div class="study-card task-browser"><div class="calendar-topline"><h2>Explorar agenda</h2><label class="study-muted">Mostrar <select id="task-filter" class="study-select"><option value="upcoming">Entregas · próximos 7 días</option><option value="today">Entregas · hoy</option><option value="future">Todas las entregas futuras</option><option value="events">Eventos y clases · próximos 7 días</option><option value="overdue">Vencidas · revisar estado</option><option value="done">Completadas aquí</option><option value="review">Por clasificar</option></select></label></div><div id="task-list" class="study-list"></div><div id="task-pagination" class="study-actions"></div></div>
     </section>
-    <section id="guides" class="study-card"><h2>Guías de estudio</h2><p>Objetivos, conceptos, ejemplo distinto, práctica y repasos. Revisa la exactitud de la guía con tus materiales del curso.</p>
+    <section id="guides" class="study-card study-panel" hidden><h2>Guías de estudio</h2><p>Objetivos, conceptos, ejemplo distinto, práctica y repasos. Revisa la exactitud de la guía con tus materiales del curso.</p>
       <form id="guide-form" class="study-form"><label>Tema<input name="topic" required maxlength="160" placeholder="Ecuaciones lineales"></label><label>Objetivo y tiempo disponible<textarea name="goal" maxlength="1200" rows="2" placeholder="Tengo tres sesiones de 30 minutos antes del examen"></textarea></label><label>Chat de referencia<select name="sourceChatId" id="guide-chat"><option value="">Sin chat de referencia</option></select></label><button class="button button--primary">Generar guía con IA</button></form>
       <div id="guide-list" class="study-list"></div>
     </section>
-    <section id="journal" class="study-card"><h2>Diario de aprendizaje</h2><p>Una entrada por día, editable. Su texto se mantiene en el diario; no se envía automáticamente al tutor.</p>
+    <section id="journal" class="study-card study-panel" hidden><h2>Diario de aprendizaje</h2><p>Una entrada por día, editable. Su texto se mantiene en el diario; no se envía automáticamente al tutor.</p>
       <form id="journal-form" class="study-form"><label>Fecha<input name="day" type="date" required></label><label>¿Qué aprendí o pude hacer por mi cuenta?<textarea name="learned" required maxlength="3000" rows="3"></textarea></label><label>¿Dónde me trabé?<textarea name="difficult" maxlength="3000" rows="2"></textarea></label><label>Mi siguiente paso<textarea name="nextStep" maxlength="1500" rows="2"></textarea></label><button class="button button--primary">Guardar reflexión</button></form><div id="journal-list" class="study-list"></div>
     </section>
-    <section id="memory" class="study-card"><h2>Perfil y recuerdos</h2><p>Guarda objetivos, preferencias y contexto de proyectos. El chat también registra declaraciones explícitas como «prefiero ejemplos de Java» o «recuerda que…». Puedes revisarlas, editarlas y borrarlas. No se asignan diagnósticos ni estilos de aprendizaje fijos.</p>
+    <section id="memory" class="study-card study-panel" hidden><h2>Perfil y recuerdos</h2><p>Guarda objetivos, preferencias y contexto de proyectos. El chat también registra declaraciones explícitas como «prefiero ejemplos de Java» o «recuerda que…». Puedes revisarlas, editarlas y borrarlas. No se asignan diagnósticos ni estilos de aprendizaje fijos.</p>
       <form id="note-form" class="study-form"><label>Tipo<select name="kind"><option value="PROFILE">Perfil de estudio</option><option value="PROJECT">Recuerdo de proyecto</option></select></label><label>Información importante<textarea name="content" required maxlength="800" rows="3" placeholder="Estoy preparando el examen de álgebra; prefiero ejemplos cortos"></textarea></label><button class="button button--primary">Guardar recuerdo</button></form><div id="note-list" class="study-list"></div>
     </section>
-  </main><script src="/js/theme.js"></script>
+  </main></div><script src="/js/theme.js"></script>
 </body></html>

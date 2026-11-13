@@ -24,34 +24,15 @@
   const chatTitle = root.querySelector('[data-chat-title]');
   const toolStatus = root.querySelector('[data-chat-tool-status]');
   const toolButtons = root.querySelectorAll('[data-chat-action]');
-  const modeSelect = root.querySelector('[data-tutor-mode]');
-  const modeHelp = root.querySelector('[data-tutor-mode-help]');
-  const modeStatus = root.querySelector('[data-tutor-mode-status]');
-  const modeLabels = { UNDERSTAND: 'Comprender', PRACTICE: 'Practicar', CHALLENGE: 'Estricto' };
-  const modeDescriptions = {
-    UNDERSTAND: 'Aprende con explicaciones y ejemplos distintos resueltos; tú aplicas la idea a tu ejercicio.',
-    PRACTICE: 'Tu idea primero: propón un paso y avanza con pistas y revisión. Tu ejercicio lo resuelves tú.',
-    CHALLENGE: 'Estricto: plantea tu estrategia antes de recibir pistas. Puedes pedir definiciones; la IA no resuelve tu ejercicio.',
-  };
-
   const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
   const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
 
   let currentChatId = null; // null = conversación nueva, todavía sin guardar
   let viewVersion = 0;      // cambia al abrir otro chat; evita pintar respuestas en la vista equivocada
   let sending = false;
-  let changingMode = false;
   let chatReady = true;
-  let selectedMode = 'PRACTICE';
   let historyVersion = 0;
   let usingTool = false;
-
-  function setMode(mode) {
-    selectedMode = Object.hasOwn(modeDescriptions, mode) ? mode : 'PRACTICE';
-    modeSelect.value = selectedMode;
-    modeHelp.textContent = modeDescriptions[selectedMode];
-    modeStatus.textContent = '';
-  }
 
   /* ---------------- Sidebar móvil ---------------- */
   const closeSidebar = () => document.body.classList.remove('sidebar-open');
@@ -62,9 +43,8 @@
   const resizeTextarea = () => {
     textarea.style.height = 'auto';
     textarea.style.height = `${Math.min(textarea.scrollHeight, 192)}px`;
-    sendButton.disabled = sending || changingMode || usingTool || !chatReady || textarea.value.trim().length === 0;
-    modeSelect.disabled = sending || changingMode || usingTool || !chatReady;
-    toolButtons.forEach(button => { button.disabled = currentChatId === null || !chatReady || sending || changingMode || usingTool; });
+    sendButton.disabled = sending || usingTool || !chatReady || textarea.value.trim().length === 0;
+    toolButtons.forEach(button => { button.disabled = currentChatId === null || !chatReady || sending || usingTool; });
   };
   textarea?.addEventListener('input', resizeTextarea);
   textarea?.addEventListener('keydown', event => {
@@ -105,15 +85,14 @@
     root.querySelector('[data-chat-scroll]').scrollTop = 1e9;
   };
 
-  function appendMessage(role, content, { error = false, mode = null } = {}) {
+  function appendMessage(role, content, { error = false } = {}) {
     intro?.setAttribute('hidden', '');
     const wrapper = document.createElement('div');
     wrapper.className = `msg msg--${role === 'user' ? 'user' : 'agent'}${error ? ' msg--error' : ''}`;
 
     const meta = document.createElement('p');
     meta.className = 'msg__meta';
-    const agentLabel = !error && Object.hasOwn(modeLabels, mode) ? `Agente · ${modeLabels[mode]}` : 'Agente';
-    meta.textContent = role === 'user' ? 'Tú' : agentLabel;
+    meta.textContent = role === 'user' ? 'Tú' : 'Tutor';
     wrapper.appendChild(meta);
 
     const bubble = document.createElement('div');
@@ -219,7 +198,6 @@
     chatTitle.textContent = 'Cargando conversación…';
     toolStatus.textContent = '';
     chatReady = false;
-    setMode('PRACTICE');
     resizeTextarea();
     setActive();
     log.replaceChildren();
@@ -228,7 +206,6 @@
     try {
       const chat = await api(`/chat/api/chats/${id}`);
       if (version !== viewVersion) return;
-      setMode(chat.mode);
       chatTitle.textContent = chat.title;
       history.replaceState(null,'',`/chat?chat=${id}`);
       chatReady = true;
@@ -251,7 +228,6 @@
     toolStatus.textContent = '';
     history.replaceState(null,'','/chat');
     chatReady = true;
-    setMode('PRACTICE');
     resizeTextarea();
     log.replaceChildren();
     intro?.removeAttribute('hidden');
@@ -290,45 +266,15 @@
     finally{usingTool=false;resizeTextarea();}
   }));
 
-  modeSelect.addEventListener('change', async () => {
-    const previousMode = selectedMode;
-    const nextMode = modeSelect.value;
-    const version = viewVersion;
-    const id = currentChatId;
-    setMode(nextMode);
-    if (id === null) return; // se guarda junto al primer intercambio exitoso
-    changingMode = true;
-    resizeTextarea();
-    modeStatus.textContent = 'Guardando modo…';
-    try {
-      const body = await api(`/chat/api/chats/${id}/mode`, {
-        method: 'POST', body: JSON.stringify({ mode: nextMode }),
-      });
-      if (version === viewVersion) {
-        setMode(body.mode);
-        modeStatus.textContent = 'Modo guardado.';
-      }
-    } catch (err) {
-      if (version === viewVersion) {
-        setMode(previousMode);
-        modeStatus.textContent = err.message || 'No se pudo guardar el modo.';
-      }
-    } finally {
-      changingMode = false;
-      resizeTextarea();
-    }
-  });
-
   /* ---------------- Envío ---------------- */
   form?.addEventListener('submit', async event => {
     event.preventDefault();
     const text = textarea.value.trim();
-    if (!text || sending || changingMode || usingTool || !chatReady) return;
+    if (!text || sending || usingTool || !chatReady) return;
 
     log.querySelectorAll('.msg--error').forEach(node => node.remove());
     const version = viewVersion;
     const chatIdAtSend = currentChatId;
-    const modeAtSend = selectedMode;
 
     sending = true;
     textarea.disabled = true;
@@ -340,17 +286,16 @@
     try {
       const body = await api('/chat/api/mensajes', {
         method: 'POST',
-        body: JSON.stringify({ chatId: chatIdAtSend, content: text, mode: modeAtSend }),
+        body: JSON.stringify({ chatId: chatIdAtSend, content: text }),
       });
       if (!body?.content) throw new Error('La IA no devolvió contenido.');
 
       if (version === viewVersion) {
         typing.remove();
         // Usa el modo confirmado por el servidor para esta respuesta concreta.
-        appendMessage('assistant', body.content, { mode: body.mode });
+        appendMessage('assistant', body.content);
         if (currentChatId === null) { currentChatId = body.chatId; chatTitle.textContent = text.slice(0,64); }
         history.replaceState(null,'',`/chat?chat=${body.chatId}`);
-        setMode(body.mode);
       }
       await loadHistory();
     } catch (err) {
@@ -368,7 +313,6 @@
     }
   });
 
-  setMode('PRACTICE');
   (async()=>{await loadHistory();const value=new URLSearchParams(location.search).get('chat');if(value&&/^\d+$/.test(value)&&Number.isSafeInteger(Number(value))&&viewVersion===0)await openChat(Number(value));})();
   resizeTextarea();
 })();

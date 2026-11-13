@@ -12,6 +12,7 @@ import ideapropiaprimero.repository.ShareRepository;
 import ideapropiaprimero.service.ChatService;
 import ideapropiaprimero.service.ChatTitles;
 import ideapropiaprimero.service.StudyService;
+import ideapropiaprimero.service.CanvasCalendarService;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +46,15 @@ public class ChatController {
     private final UserRepository users;
     private final StudyService studies;
     private final ShareRepository shares;
+    private final CanvasCalendarService calendar;
 
-    public ChatController(ChatService chatService, ChatRepository chats, UserRepository users, StudyService studies, ShareRepository shares) {
+    public ChatController(ChatService chatService, ChatRepository chats, UserRepository users, StudyService studies, ShareRepository shares, CanvasCalendarService calendar) {
         this.chatService = chatService;
         this.chats = chats;
         this.users = users;
         this.studies = studies;
         this.shares = shares;
+        this.calendar = calendar;
     }
 
     @GetMapping("/chat")
@@ -153,11 +156,24 @@ public class ChatController {
 
         try {
             if (request.mode() != null) mode = TutorMode.parse(request.mode());
-            var support = studies.context(userId, request.chatId(), content);
-            String respuesta = support.text().isBlank() ? chatService.responder(contexto, mode)
-                    : chatService.responder(contexto, mode, support.text());
-            if(!support.sources().isEmpty())respuesta=studies.appendSources(respuesta,support);
-            // Se guarda solo si la IA respondió: un fallo no deja mensajes huérfanos ni chats vacíos.
+            calendar.refresh(userId, false);
+            var agenda = studies.scheduleReply(userId, content);
+            String respuesta;
+            if(agenda.isPresent()) {
+                respuesta=agenda.get();
+                var sync=calendar.status(userId);
+                if(Boolean.TRUE.equals(sync.get("connected"))) {
+                    respuesta+="\n\nÚltima actualización de Canvas: "+sync.get("syncedAt")+".";
+                    if(!String.valueOf(sync.get("error")).isBlank())respuesta+=" No se pudo actualizar ahora; consulta la conexión en Mi estudio.";
+                    if(sync.get("skipped") instanceof Number n&&n.intValue()>0)respuesta+=" Hay elementos no compatibles omitidos; revisa Canvas para comprobar la agenda completa.";
+                } else respuesta+="\n\nDatos locales. Conecta la URL de Canvas en Mi estudio para recibir cambios.";
+            } else {
+                var support = studies.context(userId, request.chatId(), content);
+                respuesta = support.text().isBlank() ? chatService.responder(contexto, mode)
+                        : chatService.responder(contexto, mode, support.text());
+                if(!support.sources().isEmpty())respuesta=studies.appendSources(respuesta,support);
+            }
+            // Se guarda solo tras obtener una respuesta válida, de agenda o de tutoría.
             long chatId = chats.saveExchange(userId, request.chatId(), titleFrom(content), content, respuesta, mode);
             try { studies.observe(userId,chatId,content); }
             catch(RuntimeException e) { java.util.logging.Logger.getLogger(ChatController.class.getName()).warning("El chat se guardó, pero no se pudo actualizar la memoria automática."); }

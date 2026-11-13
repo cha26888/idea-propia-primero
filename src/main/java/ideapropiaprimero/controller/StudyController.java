@@ -12,13 +12,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class StudyController {
-    private final StudyRepository store;private final StudyService studies;private final UserRepository users;
-    public StudyController(StudyRepository store,StudyService studies,UserRepository users){this.store=store;this.studies=studies;this.users=users;}
+    private final StudyRepository store;private final StudyService studies;private final UserRepository users;private final CanvasCalendarService calendar;
+    public StudyController(StudyRepository store,StudyService studies,UserRepository users,CanvasCalendarService calendar){this.store=store;this.studies=studies;this.users=users;this.calendar=calendar;}
     private long owner(Principal p){return users.findByLogin(p.getName()).orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED)).getId();}
     private static void found(boolean ok){if(!ok)throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No encontramos ese elemento o ya existe un recuerdo igual.");}
     @GetMapping("/study") public String view(){return "study/index";}
     @GetMapping("/study/api/dashboard") @ResponseBody
-    public Map<String,Object> dashboard(Principal p){long u=owner(p);return Map.of("today",StudyService.today().toString(),"notes",store.notes(u),"tasks",store.tasks(u),"journal",store.journal(u),"guides",store.guides(u),"daily",studies.daily(u));}
+    public Map<String,Object> dashboard(Principal p){long u=owner(p);calendar.refresh(u,false);return Map.of("calendar",calendar.status(u),"today",StudyService.today().toString(),"notes",store.notes(u),"tasks",store.tasks(u),"journal",store.journal(u),"guides",store.guides(u),"daily",studies.daily(u));}
     public record NoteRequest(String kind,String content,Long sourceChatId) { }
     @PostMapping("/study/api/notes") @ResponseBody
     public Map<String,Boolean> addNote(@RequestBody NoteRequest r,Principal p){required(r);studies.addNote(owner(p),r.kind(),r.content(),r.sourceChatId());return Map.of("saved",true);}
@@ -37,6 +37,16 @@ public class StudyController {
     public record CalendarRequest(String content,String course) { }
     @PostMapping("/study/api/calendar") @ResponseBody
     public Map<String,Object> calendar(@RequestBody CalendarRequest r,Principal p){required(r);var parsed=CalendarImportService.parse(r.content());int count=store.importTasks(owner(p),StudyService.text(r.course(),80,true),parsed.events());return Map.of("imported",count,"skipped",parsed.skipped(),"message","Importación manual. Se omiten recurrencias, cancelados y eventos no compatibles; no es una sincronización automática.");}
+    public record FeedRequest(String url,String course) { }
+    @PostMapping("/study/api/calendar/connect") @ResponseBody
+    public Map<String,Object> connect(@RequestBody FeedRequest r,Principal p){required(r);long u=owner(p);calendar.connect(u,r.url(),r.course());return calendar.status(u);}
+    @PostMapping("/study/api/calendar/sync") @ResponseBody
+    public Map<String,Object> sync(Principal p){long u=owner(p);calendar.refresh(u,true);return calendar.status(u);}
+    @DeleteMapping("/study/api/calendar/connection") @ResponseBody
+    public Map<String,Boolean> disconnect(Principal p){calendar.disconnect(owner(p));return Map.of("disconnected",true);}
+    public record KindRequest(String kind) { }
+    @PutMapping("/study/api/tasks/{id}/kind") @ResponseBody
+    public Map<String,Boolean> classify(@PathVariable long id,@RequestBody KindRequest r,Principal p){required(r);found(store.classifyTask(owner(p),id,StudyService.text(r.kind(),10,false)));return Map.of("saved",true);}
     public record JournalRequest(String day,String learned,String difficult,String nextStep) { }
     @PostMapping("/study/api/journal") @ResponseBody
     public Map<String,Boolean> journal(@RequestBody JournalRequest r,Principal p){required(r);store.saveJournal(owner(p),StudyService.date(r.day()),StudyService.text(r.learned(),3000,false),StudyService.text(r.difficult(),3000,true),StudyService.text(r.nextStep(),1500,true));return Map.of("saved",true);}
