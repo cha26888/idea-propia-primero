@@ -208,12 +208,19 @@ body.chat-body {
   gap: .4rem
 }
 
+/* Enlaces inferiores de la barra lateral */
+
 .sidebar__footer a {
-  font-size: var(--text-small);
-  color: var(--color-muted);
-  text-decoration: none;
-  display: flex;
-  justify-content: space-between
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 2rem;
+
+    font-size: var(--text-small);
+    color: var(--color-muted);
+
+    text-decoration: none;
 }
 
 .sidebar__footer a:hover {
@@ -409,6 +416,7 @@ body.chat-body {
   background: var(--color-bg);
   overflow: auto;
   scrollbar-width: none;
+  display: block;
 }
 .composer__textarea::-webkit-scrollbar {
     display: none;
@@ -418,20 +426,29 @@ body.chat-body {
   outline-offset: 2px
 }
 
+/* Boton de enviar centrado verticalmente */
+
 .composer__send {
-  position: absolute;
-  right: .4rem;
-  bottom: .4rem;
-  width: 2.3rem;
-  height: 2.3rem;
-  border-radius: 50%;
-  border: 0;
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer
+    position: absolute;
+
+    right: .4rem;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 2.3rem;
+    height: 2.3rem;
+
+    border-radius: 50%;
+    border: 0;
+
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
 }
 
 .composer__send:hover {
@@ -488,4 +505,17 @@ body.chat-body {
   .msg {
     max-width: 92%
   }
+}
+
+/* Servicios futuros no interactivos */
+
+.sidebar__future {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 2rem;
+
+    font-size: var(--text-small);
+    color: var(--color-muted);
 }
