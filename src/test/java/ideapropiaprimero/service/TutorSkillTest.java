@@ -73,8 +73,8 @@ class TutorSkillTest {
 
         String prompt = skill.sistema(TutorMode.PRACTICE, history);
 
-        assertTrue(prompt.contains("bloqueo repetido"));
-        assertTrue(prompt.contains("Cambia de estrategia"));
+        assertTrue(prompt.contains("PROGRESIÓN DE AYUDA"));
+        assertTrue(prompt.contains("No sé"));
     }
 
     @Test

@@ -202,7 +202,7 @@ class ChatServiceTest {
             calls[0]++;
             assertEquals("system", messages.get(0).role());
             assertTrue(
-                messages.get(0).content().contains("Adapta la ayuda")
+                messages.get(0).content().contains("PROBLEMA CONCRETO SIN INTENTO")
             );
             return "Comencemos identificando qué pide el ejercicio.";
         }, skill);
